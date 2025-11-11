@@ -1,0 +1,392 @@
+﻿@model PaginatedList<BlueTravel.Models.Hospedaje>
+
+@{
+    ViewData["Title"] = "Hospedajes en Guanacaste";
+}
+
+<!-- Header Section -->
+<section class="page-header bg-light-gradient py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8" data-aos="fade-right">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-3">
+                        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                        <li class="breadcrumb-item active">Hospedajes</li>
+                    </ol>
+                </nav>
+                <h1 class="display-4 fw-bold mb-3">Hospedajes en Guanacaste</h1>
+                <p class="lead text-muted">
+                    Descubre los mejores hoteles, resorts y hospedajes boutique de la región
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end" data-aos="fade-left">
+                <div class="d-flex gap-2 flex-wrap justify-content-lg-end">
+                    <span class="badge bg-primary-gradient px-3 py-2">
+                        <i class="bi bi-house-fill me-2"></i>
+                        @Model.TotalCount hospedajes disponibles
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Filtros Modernos -->
+<section class="filters-section py-4 bg-white sticky-top shadow-sm" style="top: 76px; z-index: 100;">
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text bg-white">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" class="form-control" placeholder="Buscar por nombre..." id="searchInput">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" id="filterUbicacion">
+                    <option value="">Todas las ubicaciones</option>
+                    <option>Playas del Coco</option>
+                    <option>Tamarindo</option>
+                    <option>Liberia</option>
+                    <option>Rincón de la Vieja</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" id="filterPrecio">
+                    <option value="">Cualquier precio</option>
+                    <option value="0-50">$0 - $50</option>
+                    <option value="51-100">$51 - $100</option>
+                    <option value="101-200">$101 - $200</option>
+                    <option value="201+">$201+</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" id="filterCapacidad">
+                    <option value="">Capacidad</option>
+                    <option value="1-2">1-2 personas</option>
+                    <option value="3-4">3-4 personas</option>
+                    <option value="5+">5+ personas</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" id="sortBy">
+                    <option value="relevancia">Más relevante</option>
+                    <option value="precio-asc">Precio: menor a mayor</option>
+                    <option value="precio-desc">Precio: mayor a menor</option>
+                    <option value="nombre">Nombre A-Z</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Grid de Hospedajes -->
+<section class="hospedajes-grid py-5">
+    <div class="container">
+        <!-- Contador de resultados -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <p class="text-muted mb-0">
+                <strong class="text-dark" id="resultCount">@Model.Items.Count</strong> hospedajes en esta página
+            </p>
+            <div class="view-toggles btn-group" role="group">
+                <button type="button" class="btn btn-outline-secondary active" id="gridView">
+                    <i class="bi bi-grid-3x3-gap"></i>
+                </button>
+                <button type="button" class="btn btn-outline-secondary" id="listView">
+                    <i class="bi bi-list-ul"></i>
+                </button>
+            </div>
+        </div>
+
+        @if (!Model.Items.Any())
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-house-slash text-muted" style="font-size: 5rem;"></i>
+                <h3 class="mt-4">No hay hospedajes disponibles</h3>
+                <p class="text-muted">Vuelve a intentarlo más tarde</p>
+            </div>
+        }
+        else
+        {
+            <div class="row g-4" id="hospedajesContainer">
+                @foreach (var hospedaje in Model.Items)
+                {
+                    <div class="col-md-6 col-lg-4 hospedaje-item" 
+                         data-nombre="@hospedaje.Nombre.ToLower()"
+                         data-ubicacion="@hospedaje.Ubicacion"
+                         data-precio="@hospedaje.PrecioPorNoche"
+                         data-capacidad="@hospedaje.CapacidadMaxima"
+                         data-aos="fade-up">
+                        <div class="card hospedaje-card h-100 border-0 shadow-sm">
+                            <!-- Imagen con badges -->
+                            <div class="position-relative overflow-hidden">
+                                @if (!string.IsNullOrEmpty(hospedaje.ImagenUrl))
+                                {
+                                    <img src="@hospedaje.ImagenUrl" 
+                                         class="card-img-top hospedaje-img" 
+                                         alt="@hospedaje.Nombre"
+                                         loading="lazy">
+                                }
+                                else
+                                {
+                                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop" 
+                                         class="card-img-top hospedaje-img" 
+                                         alt="Hospedaje">
+                                }
+                                
+                                <!-- Badge de destacado -->
+                                <div class="position-absolute top-0 start-0 m-3">
+                                    <span class="badge bg-danger rounded-pill shadow">
+                                        <i class="bi bi-fire me-1"></i>Popular
+                                    </span>
+                                </div>
+                                
+                                <!-- Botón de favorito -->
+                                <button class="btn btn-light btn-sm rounded-circle position-absolute top-0 end-0 m-3 shadow-sm">
+                                    <i class="bi bi-heart"></i>
+                                </button>
+                            </div>
+
+                            <div class="card-body p-4">
+                                <!-- Ubicación -->
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <i class="bi bi-geo-alt-fill text-primary"></i>
+                                    <small class="text-muted">@hospedaje.Ubicacion</small>
+                                </div>
+
+                                <!-- Título -->
+                                <h5 class="card-title fw-bold mb-2">
+                                    @hospedaje.Nombre
+                                </h5>
+
+                                <!-- Descripción corta -->
+                                <p class="card-text text-muted small mb-3" style="height: 3rem; overflow: hidden;">
+                                    @(hospedaje.Descripcion.Length > 100 ? hospedaje.Descripcion.Substring(0, 100) + "..." : hospedaje.Descripcion)
+                                </p>
+
+                                <!-- Info rápida -->
+                                <div class="d-flex gap-3 mb-3 flex-wrap">
+                                    <small class="text-muted">
+                                        <i class="bi bi-people-fill me-1"></i>
+                                        @hospedaje.CapacidadMaxima personas
+                                    </small>
+                                    <small class="text-muted">
+                                        <i class="bi bi-door-closed-fill me-1"></i>
+                                        @hospedaje.PersonasIncluidasEnPrecio incl.
+                                    </small>
+                                </div>
+
+                                <!-- Características -->
+                                <div class="amenidades-preview mb-3">
+                                    @if (hospedaje.PermiteNinos)
+                                    {
+                                        <span class="badge bg-light text-dark me-1 mb-1">
+                                            <i class="bi bi-heart-fill text-danger me-1"></i>
+                                            Niños
+                                        </span>
+                                    }
+                                    @if (hospedaje.PermiteMascotas)
+                                    {
+                                        <span class="badge bg-light text-dark me-1 mb-1">
+                                            <i class="bi bi-heart-fill text-success me-1"></i>
+                                            Mascotas
+                                        </span>
+                                    }
+                                    @if (!string.IsNullOrEmpty(hospedaje.TipoHospedaje))
+                                    {
+                                        <span class="badge bg-light text-dark me-1 mb-1">
+                                            <i class="bi bi-building me-1"></i>
+                                            @hospedaje.TipoHospedaje
+                                        </span>
+                                    }
+                                </div>
+
+                                <hr />
+
+                                <!-- Precio y CTA -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="text-muted small">Desde</div>
+                                        <h4 class="mb-0 fw-bold text-primary">
+                                            @hospedaje.PrecioPorNoche.ToString("C")
+                                            <small class="text-muted fs-6 fw-normal">/noche</small>
+                                        </h4>
+                                    </div>
+                                    <a href="@Url.Action("Details", "Catalogo", new { tipo = "hospedaje", id = hospedaje.Id })" 
+                                       class="btn btn-primary rounded-pill px-4">
+                                        Ver Detalles
+                                        <i class="bi bi-arrow-right ms-2"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- ✅ SEMANA 3: PAGINACIÓN -->
+        @if (Model.TotalPages > 1)
+        {
+            @await Html.PartialAsync("_Pagination", Model)
+        }
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-hospedajes bg-primary text-white py-5">
+    <div class="container text-center">
+        <h2 class="display-5 fw-bold mb-3">¿No encontraste lo que buscabas?</h2>
+        <p class="lead mb-4">Contáctanos y te ayudaremos a encontrar el hospedaje perfecto</p>
+        <a href="/Account/Register" class="btn btn-light btn-lg rounded-pill px-5">
+            <i class="bi bi-chat-dots me-2"></i>Contáctanos
+        </a>
+    </div>
+</section>
+
+@section Styles {
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <style>
+        .hospedaje-card {
+            transition: all 0.3s ease;
+            border-radius: 1rem !important;
+        }
+
+        .hospedaje-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+        }
+
+        .hospedaje-img {
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .hospedaje-card:hover .hospedaje-img {
+            transform: scale(1.1);
+        }
+
+        .sticky-top {
+            backdrop-filter: blur(10px);
+        }
+
+        .filters-section {
+            animation: slideDown 0.3s ease;
+        }
+
+        @@keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .amenidades-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+        }
+
+        .breadcrumb-item + .breadcrumb-item::before {
+            content: "›";
+            font-size: 1.2rem;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 600, once: true });
+
+        // Búsqueda en tiempo real
+        document.getElementById('searchInput')?.addEventListener('input', filterHospedajes);
+        document.getElementById('filterUbicacion')?.addEventListener('change', filterHospedajes);
+        document.getElementById('filterPrecio')?.addEventListener('change', filterHospedajes);
+        document.getElementById('filterCapacidad')?.addEventListener('change', filterHospedajes);
+        document.getElementById('sortBy')?.addEventListener('change', sortHospedajes);
+
+        function filterHospedajes() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const ubicacion = document.getElementById('filterUbicacion').value;
+            const precio = document.getElementById('filterPrecio').value;
+            const capacidad = document.getElementById('filterCapacidad').value;
+
+            const items = document.querySelectorAll('.hospedaje-item');
+            let visibleCount = 0;
+
+            items.forEach(item => {
+                const nombre = item.dataset.nombre;
+                const itemUbicacion = item.dataset.ubicacion;
+                const itemPrecio = parseFloat(item.dataset.precio);
+                const itemCapacidad = parseInt(item.dataset.capacidad);
+
+                let visible = true;
+
+                if (search && !nombre.includes(search)) visible = false;
+                if (ubicacion && itemUbicacion !== ubicacion) visible = false;
+                if (precio) {
+                    const [min, max] = precio.split('-').map(p => parseInt(p.replace('+', '')));
+                    if (max && (itemPrecio < min || itemPrecio > max)) visible = false;
+                    if (!max && itemPrecio < min) visible = false;
+                }
+                if (capacidad) {
+                    const [min, max] = capacidad.split('-').map(c => parseInt(c.replace('+', '')));
+                    if (max && (itemCapacidad < min || itemCapacidad > max)) visible = false;
+                    if (!max && itemCapacidad < min) visible = false;
+                }
+
+                item.style.display = visible ? 'block' : 'none';
+                if (visible) visibleCount++;
+            });
+
+            document.getElementById('resultCount').textContent = visibleCount;
+        }
+
+        function sortHospedajes() {
+            const container = document.getElementById('hospedajesContainer');
+            const items = Array.from(document.querySelectorAll('.hospedaje-item'));
+            const sortBy = document.getElementById('sortBy').value;
+
+            items.sort((a, b) => {
+                switch(sortBy) {
+                    case 'precio-asc':
+                        return parseFloat(a.dataset.precio) - parseFloat(b.dataset.precio);
+                    case 'precio-desc':
+                        return parseFloat(b.dataset.precio) - parseFloat(a.dataset.precio);
+                    case 'nombre':
+                        return a.dataset.nombre.localeCompare(b.dataset.nombre);
+                    default:
+                        return 0;
+                }
+            });
+
+            items.forEach(item => container.appendChild(item));
+        }
+
+        // Toggle vista grid/list
+        document.getElementById('gridView')?.addEventListener('click', function() {
+            document.getElementById('hospedajesContainer').classList.remove('list-view');
+            this.classList.add('active');
+            document.getElementById('listView').classList.remove('active');
+        });
+
+        document.getElementById('listView')?.addEventListener('click', function() {
+            document.getElementById('hospedajesContainer').classList.add('list-view');
+            this.classList.add('active');
+            document.getElementById('gridView').classList.remove('active');
+        });
+    </script>
+}

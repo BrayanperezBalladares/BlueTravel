@@ -1,0 +1,157 @@
+@model BlueTravel.Models.Reserva
+
+@{
+    ViewData["Title"] = "Reservar Hospedaje";
+    var hospedaje = ViewBag.Hospedaje as BlueTravel.Models.Hospedaje;
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0"><i class="bi bi-house-heart me-2"></i>Formulario de Reserva</h2>
+                </div>
+
+                <div class="card-body p-5">
+                    <!-- Info del Hospedaje -->
+                    <div class="alert alert-info border-0 mb-4">
+                        <h5>@hospedaje?.Nombre</h5>
+                        <p class="mb-0 text-muted">
+                            <i class="bi bi-geo-alt me-1"></i>@hospedaje?.Ubicacion - 
+                            <i class="bi bi-people me-1"></i>Hasta @hospedaje?.CapacidadMaxima personas
+                        </p>
+                    </div>
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger border-0 mb-4">
+                            <h5><i class="bi bi-exclamation-triangle-fill me-2"></i>Errores</h5>
+                            @foreach (var modelState in ViewData.ModelState.Values)
+                            {
+                                @foreach (var error in modelState.Errors)
+                                {
+                                    <small class="d-block mb-1">@error.ErrorMessage</small>
+                                }
+                            }
+                        </div>
+                    }
+
+                    <form asp-action="CreateHospedaje" asp-controller="Reservas" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" name="TipoReserva" value="Hospedaje" />
+                        <input type="hidden" name="ItemId" value="@Model.ItemId" />
+
+                        <!-- Fechas -->
+                        <div class="card mb-4 border-light">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0"><i class="bi bi-calendar-event me-2"></i>Fechas</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="FechaInicio" class="form-label fw-semibold"></label>
+                                        <input asp-for="FechaInicio" type="date" class="form-control form-control-lg"
+                                               min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" required />
+                                        <span asp-validation-for="FechaInicio" class="text-danger small"></span>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="FechaFin" type="date" class="form-label fw-semibold"></label>
+                                        <input asp-for="FechaFin" class="form-control form-control-lg"
+                                               min="@DateTime.Today.AddDays(2).ToString("yyyy-MM-dd")" required />
+                                        <span asp-validation-for="FechaFin" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Huéspedes -->
+                        <div class="card mb-4 border-light">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0"><i class="bi bi-people-fill me-2"></i>Huéspedes</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label asp-for="CantidadAdultos" class="form-label fw-semibold"></label>
+                                        <input asp-for="CantidadAdultos" type="number" class="form-control form-control-lg"
+                                               min="1" max="@hospedaje?.CapacidadMaxima" required />
+                                        <span asp-validation-for="CantidadAdultos" class="text-danger small"></span>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label asp-for="CantidadNinos" class="form-label fw-semibold"></label>
+                                        <input asp-for="CantidadNinos" type="number" class="form-control form-control-lg"
+                                               min="0" max="@hospedaje?.CapacidadMaxima" />
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label asp-for="CantidadSeniors" class="form-label fw-semibold"></label>
+                                        <input asp-for="CantidadSeniors" type="number" class="form-control form-control-lg"
+                                               min="0" max="@hospedaje?.CapacidadMaxima" />
+                                    </div>
+                                </div>
+                                <div class="alert alert-info small">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Capacidad máxima: @hospedaje?.CapacidadMaxima personas
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Precio -->
+                        <div class="card mb-4 border-light bg-light">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0"><i class="bi bi-cash-coin me-2"></i>Precio por Noche</h5>
+                            </div>
+                            <div class="card-body text-center">
+                                <h3 class="text-primary fw-bold">@hospedaje?.PrecioPorNoche.ToString("C")</h3>
+                                <p class="text-muted small" id="totalEstimado">El total se calculará cuando completes las fechas</p>
+                            </div>
+                        </div>
+
+                        <!-- Comentarios -->
+                        <div class="mb-3">
+                            <label asp-for="Comentarios" class="form-label fw-semibold">Comentarios Adicionales</label>
+                            <textarea asp-for="Comentarios" class="form-control" rows="3" placeholder="Solicitudes especiales..."></textarea>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle me-2"></i>Confirmar Reserva
+                            </button>
+                            <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Volver
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const fechaInicio = document.querySelector('input[name="FechaInicio"]');
+            const fechaFin = document.querySelector('input[name="FechaFin"]');
+            const totalEl = document.getElementById('totalEstimado');
+            const precioPorNoche = @hospedaje?.PrecioPorNoche;
+
+            function calcularTotal() {
+                if (fechaInicio.value && fechaFin.value) {
+                    const inicio = new Date(fechaInicio.value);
+                    const fin = new Date(fechaFin.value);
+                    const noches = Math.ceil((fin - inicio) / (1000 * 60 * 60 * 24));
+                    if (noches > 0) {
+                        const total = precioPorNoche * noches;
+                        totalEl.textContent = noches + ' noche(s) x $' + precioPorNoche.toFixed(2) + ' = $' + total.toFixed(2);
+                    }
+                }
+            }
+
+            fechaInicio?.addEventListener('change', calcularTotal);
+            fechaFin?.addEventListener('change', calcularTotal);
+        });
+    </script>
+}

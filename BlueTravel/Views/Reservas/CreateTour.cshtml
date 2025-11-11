@@ -1,0 +1,170 @@
+@model BlueTravel.Models.Reserva
+
+@{
+    ViewData["Title"] = "Reservar Tour";
+    var tour = ViewBag.Tour as BlueTravel.Models.Tour;
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="mb-0"><i class="bi bi-compass me-2"></i>Formulario de Reserva</h2>
+                </div>
+
+                <div class="card-body p-5">
+                    <!-- Info del Tour -->
+                    <div class="alert alert-info border-0 mb-4">
+                        <h5>@tour?.Nombre</h5>
+                        <p class="mb-0 text-muted">
+                            <i class="bi bi-geo-alt me-1"></i>@tour?.Ubicacion
+                            <i class="bi bi-clock me-2 ms-3"></i>@tour?.Duracion hora(s)
+                            <i class="bi bi-bar-chart me-1 ms-2"></i>@tour?.NivelDificultad
+                        </p>
+                    </div>
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger border-0 mb-4">
+                            <h5><i class="bi bi-exclamation-triangle-fill me-2"></i>Errores</h5>
+                            @foreach (var modelState in ViewData.ModelState.Values)
+                            {
+                                @foreach (var error in modelState.Errors)
+                                {
+                                    <small class="d-block mb-1">@error.ErrorMessage</small>
+                                }
+                            }
+                        </div>
+                    }
+
+                    <form asp-action="CreateTour" asp-controller="Reservas" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" name="TipoReserva" value="Tour" />
+                        <input type="hidden" name="ItemId" value="@Model.ItemId" />
+
+                        <!-- Fecha -->
+                        <div class="card mb-4 border-light">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0"><i class="bi bi-calendar-event me-2"></i>Fecha</h5>
+                            </div>
+                            <div class="card-body">
+                                <label asp-for="FechaInicio" class="form-label fw-semibold"></label>
+                                <input asp-for="FechaInicio" type="date" class="form-control form-control-lg"
+                                       value="@Model.FechaInicio.ToString("yyyy-MM-dd")"
+                                       min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" required />
+                                <span asp-validation-for="FechaInicio" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <!-- Participantes -->
+                        <div class="card mb-4 border-light">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0"><i class="bi bi-people-fill me-2"></i>Participantes</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label asp-for="CantidadAdultos" class="form-label fw-semibold"></label>
+                                        <input asp-for="CantidadAdultos" type="number" class="form-control form-control-lg"
+                                               min="1" required />
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label asp-for="CantidadNinos" class="form-label fw-semibold"></label>
+                                        <input asp-for="CantidadNinos" type="number" class="form-control form-control-lg" min="0" />
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label asp-for="CantidadSeniors" class="form-label fw-semibold"></label>
+                                        <input asp-for="CantidadSeniors" type="number" class="form-control form-control-lg" min="0" />
+                                    </div>
+                                </div>
+                                <div class="alert alert-info small">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Cupos disponibles: @(ViewBag.CuposDisponibles ?? 0)
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Precios -->
+                        <div class="card mb-4 border-light bg-light">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0"><i class="bi bi-cash-coin me-2"></i>Precios</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col-md-4">
+                                        <strong>Adulto</strong>
+                                        <p class="text-primary fw-bold">@tour?.Precio.ToString("C")</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Niño</strong>
+                                        <p class="text-primary fw-bold">@(tour?.PrecioNino?.ToString("C") ?? "N/A")</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Senior</strong>
+                                        <p class="text-primary fw-bold">@(tour?.PrecioSenior?.ToString("C") ?? "N/A")</p>
+                                    </div>
+                                </div>
+                                <p class="text-muted small text-center mb-0" id="totalEstimado">El total se calculará cuando completes los datos</p>
+                            </div>
+                        </div>
+
+                        <!-- Comentarios -->
+                        <div class="mb-3">
+                            <label asp-for="Comentarios" class="form-label fw-semibold">Comentarios Adicionales</label>
+                            <textarea asp-for="Comentarios" class="form-control" rows="3" placeholder="Preguntas o solicitudes..."></textarea>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle me-2"></i>Confirmar Reserva
+                            </button>
+                            <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Volver
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const cantAdultos = document.querySelector('input[name="CantidadAdultos"]');
+            const cantNinos = document.querySelector('input[name="CantidadNinos"]');
+            const cantSeniors = document.querySelector('input[name="CantidadSeniors"]');
+            const totalEl = document.getElementById('totalEstimado');
+
+            const precioAdulto = @tour?.Precio;
+            const precioNino = @(tour?.PrecioNino ?? 0);
+            const precioSenior = @(tour?.PrecioSenior ?? 0);
+            const descuentoGrupo = @(tour?.DescuentoGrupo ?? 0);
+
+            function calcularTotal() {
+                const adultos = parseInt(cantAdultos.value || 0);
+                const ninos = parseInt(cantNinos.value || 0);
+                const seniors = parseInt(cantSeniors.value || 0);
+                const total = adultos + ninos + seniors;
+
+                if (total > 0) {
+                    let subtotal = (adultos * precioAdulto) + (ninos * precioNino) + (seniors * precioSenior);
+                    let descuento = 0;
+                    if (descuentoGrupo > 0 && total >= 10) {
+                        descuento = subtotal * (descuentoGrupo / 100);
+                    }
+                    const totalFinal = subtotal - descuento;
+                    totalEl.textContent = 'Total: $' + totalFinal.toFixed(2);
+                }
+            }
+
+            cantAdultos?.addEventListener('input', calcularTotal);
+            cantNinos?.addEventListener('input', calcularTotal);
+            cantSeniors?.addEventListener('input', calcularTotal);
+        });
+    </script>
+}

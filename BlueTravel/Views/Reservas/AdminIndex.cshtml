@@ -1,0 +1,140 @@
+@model PaginatedList<BlueTravel.Models.Reserva>
+
+@{
+    ViewData["Title"] = "Gestión de Reservas";
+}
+
+<div class="container my-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-5 fw-bold">
+                <i class="fas fa-tasks text-danger"></i> Gestión de Reservas
+            </h1>
+            <p class="lead text-muted">Panel de administración de todas las reservas del sistema</p>
+        </div>
+    </div>
+
+    <!-- Estadísticas rápidas -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <h3 class="text-warning">@Model.Items.Count(r => r.Estado == "Pendiente")</h3>
+                    <small class="text-muted">Pendientes</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h3 class="text-success">@Model.Items.Count(r => r.Estado == "Confirmada")</h3>
+                    <small class="text-muted">Confirmadas</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-danger">
+                <div class="card-body text-center">
+                    <h3 class="text-danger">@Model.Items.Count(r => r.Estado == "Cancelada")</h3>
+                    <small class="text-muted">Canceladas</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h3 class="text-info">@Model.Items.Count(r => r.Estado == "Completada")</h3>
+                    <small class="text-muted">Completadas</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Items.Any())
+    {
+        <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle fa-2x mb-3"></i>
+            <h4>No hay reservas en el sistema</h4>
+        </div>
+    }
+    else
+    {
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Usuario</th>
+                                <th>Tipo</th>
+                                <th>Item</th>
+                                <th>Fechas</th>
+                                <th>Personas</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var reserva in Model.Items)
+                            {
+                                <tr>
+                                    <td><strong>#@reserva.Id</strong></td>
+                                    <td>
+                                        <small class="text-muted">@reserva.UsuarioId.Substring(0, Math.Min(8, reserva.UsuarioId.Length))...</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge @(reserva.TipoReserva == "Hospedaje" ? "bg-primary" : "bg-success")">
+                                            <i class="fas fa-@(reserva.TipoReserva == "Hospedaje" ? "hotel" : "map-marked-alt")"></i>
+                                            @reserva.TipoReserva
+                                        </span>
+                                    </td>
+                                    <td>@reserva.ItemNombre</td>
+                                    <td>
+                                        <small>
+                                            @reserva.FechaInicio.ToString("dd/MM/yy") - @reserva.FechaFin.ToString("dd/MM/yy")
+                                            <br />
+                                            <span class="text-muted">(@reserva.DiasEstancia días)</span>
+                                        </small>
+                                    </td>
+                                    <td>@reserva.CantidadPersonas</td>
+                                    <td class="fw-bold text-success">@reserva.PrecioTotal.ToString("C")</td>
+                                    <td>
+                                        <span class="badge @reserva.EstadoBadgeClass">
+                                            @reserva.Estado
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Details" asp-route-id="@reserva.Id" 
+                                               class="btn btn-sm btn-outline-primary" title="Ver detalles">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <form asp-action="Delete" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@reserva.Id" />
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                                        onclick="return confirm('¿Eliminar reserva #@reserva.Id?')"
+                                                        title="Eliminar">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginación -->
+                @if (Model.TotalPages > 1)
+                {
+                    <hr />
+                    @await Html.PartialAsync("_Pagination", Model)
+                }
+            </div>
+        </div>
+    }
+</div>

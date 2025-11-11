@@ -1,0 +1,550 @@
+@model BlueTravel.Models.Tour
+
+@{
+    ViewData["Title"] = Model.Nombre;
+}
+
+<!-- Hero Image Gallery -->
+<section class="detail-hero position-relative">
+    <div class="container-fluid p-0">
+        <div class="row g-2">
+            <div class="col-md-8">
+                <div class="main-image-wrapper">
+                    <img src="@(Model.ImagenUrl ?? "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1200&h=600&fit=crop")" 
+                         alt="@Model.Nombre" class="img-fluid w-100 main-image">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row g-2">
+                    <div class="col-12">
+                        <img src="https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=600&h=300&fit=crop" 
+                             alt="Vista 1" class="img-fluid w-100 gallery-img">
+                    </div>
+                    <div class="col-12">
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=300&fit=crop" 
+                             alt="Vista 2" class="img-fluid w-100 gallery-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Floating Action Button -->
+    <button class="btn btn-light position-absolute bottom-0 end-0 m-4 shadow-lg rounded-pill px-4">
+        <i class="bi bi-images me-2"></i>Ver todas las fotos
+    </button>
+</section>
+
+<!-- Main Content -->
+<section class="detail-content py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Left Column: Details -->
+            <div class="col-lg-8">
+                <!-- Header -->
+                <div class="mb-4" data-aos="fade-up">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                            <li class="breadcrumb-item"><a href="/Catalogo/Tours">Tours</a></li>
+                            <li class="breadcrumb-item active">@Model.Nombre</li>
+                        </ol>
+                    </nav>
+                    <h1 class="display-4 fw-bold mb-3">@Model.Nombre</h1>
+                    <div class="d-flex align-items-center gap-3 flex-wrap mb-3">
+                        <span class="badge bg-success px-3 py-2">
+                            <i class="bi bi-star-fill me-1"></i>4.9 (89 reseñas)
+                        </span>
+                        <span class="text-muted">
+                            <i class="bi bi-geo-alt-fill me-1"></i>@Model.Ubicacion
+                        </span>
+                        <span class="text-muted">
+                            <i class="bi bi-clock-fill me-1"></i>@Model.Duracion horas
+                        </span>
+                        @if (!string.IsNullOrEmpty(Model.NivelDificultad))
+                        {
+                            <span class="badge @GetDificultadClass(Model.NivelDificultad) px-3 py-2">
+                                <i class="bi bi-activity me-1"></i>@Model.NivelDificultad
+                            </span>
+                        }
+                    </div>
+                </div>
+
+                <!-- Descripción -->
+                <div class="card border-0 shadow-sm mb-4" data-aos="fade-up">
+                    <div class="card-body p-4">
+                        <h3 class="fw-bold mb-3">Acerca de este tour</h3>
+                        <p class="lead text-muted">@Model.Descripcion</p>
+                    </div>
+                </div>
+
+                <!-- Lo que incluye -->
+                <div class="card border-0 shadow-sm mb-4" data-aos="fade-up">
+                    <div class="card-body p-4">
+                        <h3 class="fw-bold mb-4">¿Qué incluye este tour?</h3>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3">
+                                    <i class="bi bi-check-circle-fill text-success fs-3"></i>
+                                    <div>
+                                        <strong>Guía profesional</strong>
+                                        <br /><small class="text-muted">Certificado y bilingüe</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3">
+                                    <i class="bi bi-cup-hot-fill text-success fs-3"></i>
+                                    <div>
+                                        <strong>Refrigerios</strong>
+                                        <br /><small class="text-muted">Snacks y bebidas incluidas</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3">
+                                    <i class="bi bi-bus-front-fill text-success fs-3"></i>
+                                    <div>
+                                        <strong>Transporte</strong>
+                                        <br /><small class="text-muted">Ida y vuelta desde hotel</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3">
+                                    <i class="bi bi-camera-fill text-success fs-3"></i>
+                                    <div>
+                                        <strong>Fotos profesionales</strong>
+                                        <br /><small class="text-muted">Durante la experiencia</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información importante -->
+                <div class="card border-0 shadow-sm mb-4" data-aos="fade-up">
+                    <div class="card-body p-4">
+                        <h3 class="fw-bold mb-4">Información importante</h3>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <i class="bi bi-clock-fill text-primary fs-4 me-3"></i>
+                                    <div>
+                                        <strong>Duración</strong>
+                                        <p class="mb-0 text-muted">@Model.Duracion horas aproximadamente</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <i class="bi bi-people-fill text-primary fs-4 me-3"></i>
+                                    <div>
+                                        <strong>Tamaño del grupo</strong>
+                                        <p class="mb-0 text-muted">Máximo @Model.CuposTotales personas</p>
+                                    </div>
+                                </div>
+                            </div>
+                            @if (Model.EdadMinima > 0)
+                            {
+                                <div class="col-md-6">
+                                    <div class="info-item">
+                                        <i class="bi bi-person-fill text-primary fs-4 me-3"></i>
+                                        <div>
+                                            <strong>Edad mínima</strong>
+                                            <p class="mb-0 text-muted">@Model.EdadMinima años</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            @if (Model.EdadMaxima.HasValue)
+                            {
+                                <div class="col-md-6">
+                                    <div class="info-item">
+                                        <i class="bi bi-person-check-fill text-primary fs-4 me-3"></i>
+                                        <div>
+                                            <strong>Edad máxima</strong>
+                                            <p class="mb-0 text-muted">@Model.EdadMaxima años</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            @if (Model.RequiereConfirmacion)
+                            {
+                                <div class="col-md-6">
+                                    <div class="info-item">
+                                        <i class="bi bi-check2-square text-warning fs-4 me-3"></i>
+                                        <div>
+                                            <strong>Confirmación requerida</strong>
+                                            <p class="mb-0 text-muted">Recibirás confirmación en 24h</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Itinerario -->
+                <div class="card border-0 shadow-sm mb-4" data-aos="fade-up">
+                    <div class="card-body p-4">
+                        <h3 class="fw-bold mb-4">
+                            <i class="bi bi-map-fill text-primary me-2"></i>Itinerario
+                        </h3>
+                        <div class="timeline-itinerary">
+                            <div class="timeline-item-itinerary">
+                                <div class="timeline-marker-itinerary bg-primary"></div>
+                                <div class="timeline-content-itinerary">
+                                    <h5 class="fw-bold">8:00 AM - Recogida en hotel</h5>
+                                    <p class="text-muted">Transporte cómodo desde tu hospedaje</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item-itinerary">
+                                <div class="timeline-marker-itinerary bg-success"></div>
+                                <div class="timeline-content-itinerary">
+                                    <h5 class="fw-bold">9:30 AM - Inicio del tour</h5>
+                                    <p class="text-muted">Briefing de seguridad y equipo</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item-itinerary">
+                                <div class="timeline-marker-itinerary bg-warning"></div>
+                                <div class="timeline-content-itinerary">
+                                    <h5 class="fw-bold">12:00 PM - Almuerzo</h5>
+                                    <p class="text-muted">Comida típica costarricense incluida</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item-itinerary">
+                                <div class="timeline-marker-itinerary bg-danger"></div>
+                                <div class="timeline-content-itinerary">
+                                    <h5 class="fw-bold">3:00 PM - Regreso</h5>
+                                    <p class="text-muted">Retorno a tu hotel</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ubicación -->
+                <div class="card border-0 shadow-sm mb-4" data-aos="fade-up">
+                    <div class="card-body p-4">
+                        <h3 class="fw-bold mb-4">
+                            <i class="bi bi-geo-alt-fill text-primary me-2"></i>Punto de encuentro
+                        </h3>
+                        <p class="lead mb-3">@Model.Ubicacion, Guanacaste, Costa Rica</p>
+                        <div class="map-placeholder bg-light rounded-3 p-5 text-center">
+                            <i class="bi bi-map text-muted" style="font-size: 4rem;"></i>
+                            <p class="text-muted mt-3">Mapa de ubicación</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Booking Card -->
+            <div class="col-lg-4">
+                <div class="sticky-booking-card" style="top: 100px;">
+                    <div class="card border-0 shadow-lg" data-aos="fade-left">
+                        <div class="card-body p-4">
+                            <!-- Disponibilidad -->
+                            @{
+                                var disponibilidad = ((decimal)Model.CuposDisponibles / Model.CuposTotales) * 100;
+                                var colorDisponibilidad = disponibilidad > 50 ? "success" : disponibilidad > 20 ? "warning" : "danger";
+                            }
+                            <div class="alert alert-@colorDisponibilidad mb-4">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <strong>@Model.CuposDisponibles cupos disponibles</strong> de @Model.CuposTotales
+                            </div>
+
+                            <!-- Precio -->
+                            <div class="text-center mb-4">
+                                <small class="text-muted d-block">Desde</small>
+                                <div class="display-4 fw-bold text-primary mb-2">
+                                    @Model.Precio.ToString("C")
+                                    <small class="fs-6 text-muted fw-normal">/persona</small>
+                                </div>
+                                
+                                @if (Model.PrecioNino.HasValue && Model.PrecioNino.Value > 0)
+                                {
+                                    <small class="text-success">
+                                        Niños (0-12): @Model.PrecioNino.Value.ToString("C")
+                                    </small>
+                                }
+                                
+                                <div class="d-flex justify-content-center gap-1 mb-2 mt-2">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-half text-warning"></i>
+                                    <span class="ms-2 text-muted">(4.9)</span>
+                                </div>
+                            </div>
+
+                            <hr />
+
+                            <!-- Formulario de reserva -->
+                            <form asp-controller="Reservas" asp-action="CreateTour" method="get">
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">
+                                        <i class="bi bi-calendar-event me-1"></i>Fecha del tour
+                                    </label>
+                                    <input type="date" class="form-control form-control-lg" 
+                                           name="fechaInicio" 
+                                           min="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")"
+                                           value="@Model.FechaDisponible.ToString("yyyy-MM-dd")"
+                                           required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">
+                                        <i class="bi bi-people me-1"></i>Participantes
+                                    </label>
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <label class="small text-muted">Adultos</label>
+                                            <select class="form-select" name="adultos">
+                                                @for (int i = 1; i <= Model.CuposDisponibles; i++)
+                                                {
+                                                    <option value="@i">@i</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="small text-muted">Niños (0-12)</label>
+                                            <select class="form-select" name="ninos">
+                                                @for (int i = 0; i <= Model.CuposDisponibles; i++)
+                                                {
+                                                    <option value="@i">@i</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-100 btn-lg rounded-pill mb-3">
+                                    <i class="bi bi-calendar-check me-2"></i>Reservar Ahora
+                                </button>
+                            </form>
+
+                            <small class="text-muted d-block text-center mb-3">
+                                No se hará ningún cargo todavía
+                            </small>
+
+                            <!-- Info adicional -->
+                            <div class="bg-light p-3 rounded-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Cancelación gratis</span>
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Confirmación inmediata</span>
+                                    <i class="bi bi-lightning-fill text-warning"></i>
+                                </div>
+                                @if (Model.DescuentoGrupo > 0)
+                                {
+                                    <div class="d-flex justify-content-between">
+                                        <span>Descuento por grupo</span>
+                                        <span class="badge bg-success">@Model.DescuentoGrupo%</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trust Badges -->
+                    <div class="text-center mt-4">
+                        <small class="text-muted d-block mb-2">Pago seguro con</small>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" 
+                             alt="Stripe" height="25">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Reviews Section -->
+<section class="reviews-section bg-light py-5">
+    <div class="container">
+        <h2 class="display-5 fw-bold mb-4">Reseñas de viajeros</h2>
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <div class="d-flex gap-1">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                            </div>
+                            <small class="text-muted">Hace 1 semana</small>
+                        </div>
+                        <p class="mb-3">"¡Experiencia increíble! El guía muy profesional y los paisajes espectaculares. 100% recomendado."</p>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="avatar bg-primary bg-opacity-10 rounded-circle p-2">
+                                <i class="bi bi-person-fill text-primary"></i>
+                            </div>
+                            <strong>Carlos M.</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <div class="d-flex gap-1">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                            </div>
+                            <small class="text-muted">Hace 2 semanas</small>
+                        </div>
+                        <p class="mb-3">"Perfecto para familias! Los niños se divirtieron muchísimo. La comida estuvo deliciosa."</p>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="avatar bg-success bg-opacity-10 rounded-circle p-2">
+                                <i class="bi bi-person-fill text-success"></i>
+                            </div>
+                            <strong>Ana L.</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <div class="d-flex gap-1">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star text-warning"></i>
+                            </div>
+                            <small class="text-muted">Hace 3 semanas</small>
+                        </div>
+                        <p class="mb-3">"Muy bueno, solo mejoraría un poco la puntualidad. El tour en sí estuvo excelente."</p>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="avatar bg-danger bg-opacity-10 rounded-circle p-2">
+                                <i class="bi bi-person-fill text-danger"></i>
+                            </div>
+                            <strong>Roberto P.</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@functions {
+    string GetDificultadClass(string? dificultad)
+    {
+        return dificultad?.ToLower() switch
+        {
+            "fácil" => "bg-success",
+            "moderado" => "bg-warning text-dark",
+            "difícil" => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+}
+
+@section Styles {
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <style>
+        .main-image {
+            height: 600px;
+            object-fit: cover;
+            border-radius: 0;
+        }
+
+        .gallery-img {
+            height: 295px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-img:hover {
+            transform: scale(1.05);
+        }
+
+        .sticky-booking-card {
+            position: sticky;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+        }
+
+        .map-placeholder {
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Timeline Itinerario */
+        .timeline-itinerary {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline-itinerary::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #667eea, #764ba2);
+        }
+
+        .timeline-item-itinerary {
+            position: relative;
+            padding-bottom: 2rem;
+        }
+
+        .timeline-marker-itinerary {
+            position: absolute;
+            left: -2rem;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 3px solid white;
+        }
+
+        .timeline-content-itinerary {
+            padding-left: 1rem;
+        }
+
+        @@media (max-width: 768px) {
+            .main-image {
+                height: 400px;
+            }
+            
+            .sticky-booking-card {
+                position: relative;
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 600, once: true });
+    </script>
+}

@@ -1,0 +1,60 @@
+<!-- ? SEMANA 4: Skeleton Loader para Cards de Catálogo -->
+<div class="row g-4" id="skeletonLoader">
+    @for (int i = 0; i < 6; i++)
+    {
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <!-- Skeleton Image -->
+                <div class="skeleton skeleton-image"></div>
+                
+                <div class="card-body p-4">
+                    <!-- Skeleton Title -->
+                    <div class="skeleton skeleton-title"></div>
+                    
+                    <!-- Skeleton Text Lines -->
+                    <div class="skeleton skeleton-text" style="width: 100%;"></div>
+                    <div class="skeleton skeleton-text" style="width: 90%;"></div>
+                    <div class="skeleton skeleton-text" style="width: 80%;"></div>
+                    
+                    <div class="mt-3 mb-3">
+                        <div class="skeleton skeleton-text" style="width: 60%;"></div>
+                    </div>
+                    
+                    <hr />
+                    
+                    <!-- Skeleton Price and Button -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="skeleton skeleton-text" style="width: 100px; height: 2rem;"></div>
+                        <div class="skeleton skeleton-button"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    // Ocultar skeleton loader cuando el contenido real se carga
+    document.addEventListener('DOMContentLoaded', function() {
+        const skeleton = document.getElementById('skeletonLoader');
+        const content = document.getElementById('realContent');
+        
+        if (skeleton && content) {
+            // Simular carga (en producción esto se haría cuando lleguen los datos)
+            setTimeout(() => {
+                skeleton.style.display = 'none';
+                content.style.display = 'block';
+                
+                // Animar entrada del contenido real
+                content.style.opacity = '0';
+                content.style.transform = 'translateY(20px)';
+                
+                requestAnimationFrame(() => {
+                    content.style.transition = 'all 0.4s ease';
+                    content.style.opacity = '1';
+                    content.style.transform = 'translateY(0)';
+                });
+            }, 1000);
+        }
+    });
+</script>

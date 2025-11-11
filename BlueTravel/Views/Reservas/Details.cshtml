@@ -1,0 +1,150 @@
+@model BlueTravel.Models.Reserva
+
+@{
+    ViewData["Title"] = "Detalles de Reserva";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header @(Model.Estado == "Confirmada" ? "bg-success" : Model.Estado == "Pendiente" ? "bg-warning" : "bg-secondary") text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">
+                            <i class="fas fa-receipt"></i> Detalles de Reserva #@Model.Id
+                        </h3>
+                        <span class="badge bg-light text-dark fs-6">@Model.Estado</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5 class="text-primary">
+                                <i class="fas fa-@(Model.TipoReserva == "Hospedaje" ? "hotel" : "map-marked-alt")"></i>
+                                @Model.TipoReserva
+                            </h5>
+                            <h4>@Model.ItemNombre</h4>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <p class="text-muted mb-1">Creada el:</p>
+                            <p class="fw-bold">@Model.FechaCreacion.ToString("dd/MM/yyyy HH:mm")</p>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted">
+                                <i class="fas fa-calendar-check"></i> Fecha de Inicio / Check-in
+                            </label>
+                            <p class="fs-5 fw-bold">@Model.FechaInicio.ToString("dd/MM/yyyy")</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted">
+                                <i class="fas fa-calendar-times"></i> Fecha de Fin / Check-out
+                            </label>
+                            <p class="fs-5 fw-bold">@Model.FechaFin.ToString("dd/MM/yyyy")</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted">
+                                <i class="fas fa-users"></i> Cantidad de Personas
+                            </label>
+                            <p class="fs-5 fw-bold">@Model.CantidadPersonas persona(s)</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted">
+                                <i class="fas fa-moon"></i> Total de Noches/Días
+                            </label>
+                            <p class="fs-5 fw-bold">@Model.DiasEstancia</p>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Comentarios))
+                    {
+                        <div class="mb-3">
+                            <label class="text-muted">
+                                <i class="fas fa-comment"></i> Comentarios Adicionales
+                            </label>
+                            <p class="fst-italic">@Model.Comentarios</p>
+                        </div>
+                    }
+
+                    @if (Model.FechaModificacion.HasValue)
+                    {
+                        <div class="alert alert-info">
+                            <small>
+                                <i class="fas fa-info-circle"></i>
+                                Última modificación: @Model.FechaModificacion.Value.ToString("dd/MM/yyyy HH:mm")
+                            </small>
+                        </div>
+                    }
+
+                    <hr />
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">Precio Total:</h4>
+                        <h2 class="text-success mb-0">@Model.PrecioTotal.ToString("C")</h2>
+                    </div>
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <div class="alert alert-warning">
+                            <strong><i class="fas fa-user-shield"></i> Panel de Administración</strong>
+                            <form asp-action="CambiarEstado" method="post" class="mt-3">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <div class="row g-2">
+                                    <div class="col-md-8">
+                                        <select name="nuevoEstado" class="form-select">
+                                            <option value="Pendiente" selected="@(Model.Estado == "Pendiente")">Pendiente</option>
+                                            <option value="Confirmada" selected="@(Model.Estado == "Confirmada")">Confirmada</option>
+                                            <option value="Cancelada" selected="@(Model.Estado == "Cancelada")">Cancelada</option>
+                                            <option value="Completada" selected="@(Model.Estado == "Completada")">Completada</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <i class="fas fa-save"></i> Cambiar Estado
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <form asp-action="Delete" method="post" class="mt-2">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <button type="submit" class="btn btn-danger w-100" 
+                                        onclick="return confirm('¿Estás seguro de eliminar esta reserva?')">
+                                    <i class="fas fa-trash"></i> Eliminar Reserva
+                                </button>
+                            </form>
+                        </div>
+                    }
+
+                    <div class="d-grid gap-2">
+                        @if (Model.Estado == "Pendiente" && !User.IsInRole("Admin"))
+                        {
+                            <form asp-action="CambiarEstado" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <input type="hidden" name="nuevoEstado" value="Cancelada" />
+                                <button type="submit" class="btn btn-danger" 
+                                        onclick="return confirm('¿Estás seguro de cancelar esta reserva?')">
+                                    <i class="fas fa-times-circle"></i> Cancelar Reserva
+                                </button>
+                            </form>
+                        }
+                        
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Volver a Mis Reservas
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

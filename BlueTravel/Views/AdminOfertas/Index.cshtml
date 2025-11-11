@@ -1,0 +1,138 @@
+@model IEnumerable<BlueTravel.Models.Oferta>
+
+@{
+    ViewData["Title"] = "Gestión de Ofertas";
+}
+
+<div class="container-fluid my-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-5 fw-bold">
+                <i class="bi bi-percent text-danger me-2"></i>
+                Gestión de Ofertas
+            </h1>
+            <p class="text-muted mb-0">Administra todas las ofertas y promociones del sistema</p>
+        </div>
+        <a asp-action="Create" class="btn btn-danger btn-lg rounded-pill px-4">
+            <i class="bi bi-plus-circle me-2"></i>Nueva Oferta
+        </a>
+    </div>
+
+    <!-- Estadísticas rápidas -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">Total Ofertas</h5>
+                    <h2 class="fw-bold text-danger">@Model.Count()</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">Activas</h5>
+                    <h2 class="fw-bold text-success">@Model.Count(o => o.FechaFin >= DateTime.Now)</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">Precio Promedio</h5>
+                    <h2 class="fw-bold text-primary">@Model.Average(o => o.Precio).ToString("C")</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">Vencidas</h5>
+                    <h2 class="fw-bold text-muted">@Model.Count(o => o.FechaFin < DateTime.Now)</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Título</th>
+                            <th>Precio</th>
+                            <th>Vigencia</th>
+                            <th>Estado</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            var diasRestantes = (item.FechaFin - DateTime.Now).Days;
+                            var estaActiva = diasRestantes >= 0;
+
+                            <tr class="@(!estaActiva ? "table-secondary" : "")">
+                                <td><strong>#@item.Id</strong></td>
+                                <td>
+                                    <strong>@item.Titulo</strong>
+                                    @if (!estaActiva)
+                                    {
+                                        <span class="badge bg-secondary ms-2">Vencida</span>
+                                    }
+                                    else if (diasRestantes <= 7)
+                                    {
+                                        <span class="badge bg-warning text-dark ms-2">
+                                            <i class="bi bi-clock"></i> @diasRestantes días
+                                        </span>
+                                    }
+                                </td>
+                                <td class="fw-bold text-success">@item.Precio.ToString("C")</td>
+                                <td>
+                                    <small>
+                                        <i class="bi bi-calendar-range"></i>
+                                        @item.FechaInicio.ToString("dd/MM/yyyy") - @item.FechaFin.ToString("dd/MM/yyyy")
+                                    </small>
+                                </td>
+                                <td>
+                                    @if (estaActiva)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle"></i> Activa
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">
+                                            <i class="bi bi-x-circle"></i> Vencida
+                                        </span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" 
+                                           class="btn btn-sm btn-outline-warning" title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form asp-action="Delete" asp-route-id="@item.Id" 
+                                              method="post" class="d-inline"
+                                              onsubmit="return confirm('¿Eliminar @item.Titulo?')">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

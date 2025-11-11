@@ -1,0 +1,363 @@
+@model BlueTravel.Models.Reserva
+
+@{
+    ViewData["Title"] = "Nueva Reserva";
+    var itemInfo = ViewBag.ItemInfo as string;
+    var precioPorNoche = ViewBag.PrecioPorNoche as decimal?;
+    var precioPorPersona = ViewBag.PrecioPorPersona as decimal?;
+    var capacidadMaxima = ViewBag.CapacidadMaxima as int?;
+    var personasIncluidas = ViewBag.PersonasIncluidas as int?;
+    var cargoPorPersonaExtra = ViewBag.CargoPorPersonaExtra as decimal?;
+    var cuposDisponibles = ViewBag.CuposDisponibles as int?;
+    var descuentoGrupo = ViewBag.DescuentoGrupo as int?;
+    var itemNombreViewBag = ViewBag.ItemNombre as string;  // ?? NUEVO
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-clipboard-list"></i> Nueva Reserva - @Model.TipoReserva
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-4">
+                        <strong><i class="fas fa-info-circle"></i> Reservando:</strong> @itemInfo
+                    </div>
+
+                    <!-- Mostrar TODOS los errores de validación -->
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger mb-4">
+                            <h5><i class="fas fa-exclamation-circle"></i> Errores de Validación:</h5>
+                            <ul class="mb-0">
+                                @foreach (var modelState in ViewData.ModelState.Values)
+                                {
+                                    foreach (var error in modelState.Errors)
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    <form asp-action="Create" asp-controller="Reservas" method="post" id="formReserva">
+                        @Html.AntiForgeryToken()
+                        
+                        <!-- Usar valores del modelo explícitamente para inputs hidden -->
+                        <input type="hidden" name="TipoReserva" value="@Model.TipoReserva" />
+                        <input type="hidden" name="ItemId" value="@Model.ItemId" />
+                        <input type="hidden" name="ItemNombre" value="@(itemNombreViewBag ?? Model.ItemNombre ?? "")" />
+
+                        <!-- SECCIÓN: FECHAS -->
+                        <div class="card mb-4 border-info">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0"><i class="fas fa-calendar"></i> Fechas</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="FechaInicio" class="form-label fw-bold"></label>
+                                        <input asp-for="FechaInicio" class="form-control" type="date" 
+                                               min="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                                        <span asp-validation-for="FechaInicio" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="FechaFin" class="form-label fw-bold"></label>
+                                        <input asp-for="FechaFin" class="form-control" type="date" 
+                                               min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" required />
+                                        <span asp-validation-for="FechaFin" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN: PERSONAS -->
+                        <div class="card mb-4 border-success">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0"><i class="fas fa-users"></i> Personas</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label asp-for="CantidadAdultos" class="form-label fw-bold"></label>
+                                        <input asp-for="CantidadAdultos" class="form-control" type="number" min="1" max="50" required />
+                                        <span asp-validation-for="CantidadAdultos" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+                                        <label asp-for="CantidadNinos" class="form-label fw-bold"></label>
+                                        <input asp-for="CantidadNinos" class="form-control" type="number" min="0" max="50" />
+                                        <span asp-validation-for="CantidadNinos" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+                                        <label asp-for="CantidadSeniors" class="form-label fw-bold"></label>
+                                        <input asp-for="CantidadSeniors" class="form-control" type="number" min="0" max="50" />
+                                        <span asp-validation-for="CantidadSeniors" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                @if (Model.TipoReserva == "Hospedaje" && capacidadMaxima.HasValue)
+                                {
+                                    <div class="alert alert-warning">
+                                        <i class="fas fa-info-circle"></i> <strong>Capacidad:</strong> Este hospedaje acepta máximo @capacidadMaxima personas.
+                                        @if (personasIncluidas.HasValue && cargoPorPersonaExtra.HasValue && cargoPorPersonaExtra > 0)
+                                        {
+                                            <br />
+                                            <small>Precio incluye @personasIncluidas personas. Personas extra: @cargoPorPersonaExtra.Value.ToString("C")/noche</small>
+                                        }
+                                    </div>
+                                }
+
+                                @if (Model.TipoReserva == "Tour" && cuposDisponibles.HasValue)
+                                {
+                                    <div class="alert alert-warning">
+                                        <i class="fas fa-info-circle"></i> <strong>Cupos Disponibles:</strong> @cuposDisponibles
+                                        @if (cuposDisponibles < 5)
+                                        {
+                                            <span class="badge bg-danger ms-2">¡ÚLTIMOS CUPOS!</span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN: INFORMACIÓN DE PRECIO -->
+                        <div class="card mb-4 border-success">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0"><i class="fas fa-dollar-sign"></i> Información de Precio</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    @if (precioPorNoche.HasValue)
+                                    {
+                                        <div class="col-md-6">
+                                            <strong>Precio por Noche:</strong>
+                                            <h4 class="text-primary">@precioPorNoche.Value.ToString("C")</h4>
+                                        </div>
+                                    }
+                                    @if (precioPorPersona.HasValue)
+                                    {
+                                        <div class="col-md-6">
+                                            <strong>Precio por Persona:</strong>
+                                            <h4 class="text-primary">@precioPorPersona.Value.ToString("C")</h4>
+                                        </div>
+                                    }
+                                    @if (Model.TipoReserva == "Tour" && descuentoGrupo.HasValue && descuentoGrupo > 0)
+                                    {
+                                        <div class="col-12 mt-3">
+                                            <div class="alert alert-info">
+                                                <i class="fas fa-tag"></i> <strong>Descuento Grupos:</strong> 
+                                                Reservas de 10+ personas: -@descuentoGrupo%
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                
+                                <!-- ? SEMANA 4: Precio estimado dinámico -->
+                                <div id="precioEstimado" class="mt-3"></div>
+                                
+                                <small class="text-muted d-block text-center mt-3">
+                                    El precio total se calculará automáticamente cuando confirmes
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN: COMENTARIOS -->
+                        <div class="mb-3">
+                            <label asp-for="Comentarios" class="form-label">
+                                Comentarios Adicionales <small class="text-muted">(opcional)</small>
+                            </label>
+                            <textarea asp-for="Comentarios" class="form-control" rows="3" 
+                                      placeholder="Solicitudes especiales, preferencias, etc."></textarea>
+                            <span asp-validation-for="Comentarios" class="text-danger"></span>
+                        </div>
+
+                        <!-- BOTONES -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg" id="btnConfirmar">
+                                <i class="fas fa-check-circle"></i> Confirmar Reserva
+                            </button>
+                            <a asp-controller="Catalogo" asp-action="@(Model.TipoReserva == "Hospedaje" ? "Hospedajes" : "Tours")" 
+                               class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- POLÍTICA DE CANCELACIÓN -->
+            <div class="card mt-4 shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-shield-alt"></i> Política de Cancelación</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="small text-muted">
+                        <li>Puedes cancelar tu reserva en cualquier momento desde "Mis Reservas"</li>
+                        <li>Las cancelaciones liberarán los cupos/disponibilidad</li>
+                        <li>Para hospedajes, considera el tiempo de anticipación</li>
+                        <li>Para tours que requieren confirmación, el administrador te notificará</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('formReserva');
+            const btnConfirmar = document.getElementById('btnConfirmar');
+            const fechaInicio = document.querySelector('input[name="FechaInicio"]');
+            const fechaFin = document.querySelector('input[name="FechaFin"]');
+            const tipoReserva = '@Model.TipoReserva';
+            
+            // ? SEMANA 4: Validación mejorada de fechas en tiempo real
+            fechaInicio.addEventListener('change', function() {
+                // Validar que sea fecha futura
+                if (!window.validator.validateFutureDate(this)) {
+                    return;
+                }
+
+                // Actualizar mínimo de fecha fin
+                const minFechaFin = new Date(this.value);
+                minFechaFin.setDate(minFechaFin.getDate() + 1);
+                fechaFin.min = minFechaFin.toISOString().split('T')[0];
+                
+                // Si fecha fin ya está seleccionada, validar rango
+                if (fechaFin.value) {
+                    window.validator.validateDateRange(fechaInicio, fechaFin);
+                }
+            });
+
+            fechaFin.addEventListener('change', function() {
+                if (fechaInicio.value) {
+                    window.validator.validateDateRange(fechaInicio, fechaFin);
+                }
+            });
+
+            // ? SEMANA 4: Validación de capacidad en tiempo real
+            const adultos = document.querySelector('input[name="CantidadAdultos"]');
+            const ninos = document.querySelector('input[name="CantidadNinos"]');
+            const seniors = document.querySelector('input[name="CantidadSeniors"]');
+
+            function validateCapacity() {
+                const total = parseInt(adultos.value || 0) + 
+                             parseInt(ninos.value || 0) + 
+                             parseInt(seniors.value || 0);
+
+                @if (Model.TipoReserva == "Hospedaje" && capacidadMaxima.HasValue)
+                {
+                    <text>
+                    if (total > @capacidadMaxima) {
+                        window.validator.showError(adultos, 'Total de personas excede la capacidad máxima (@capacidadMaxima)');
+                        return false;
+                    }
+                    </text>
+                }
+
+                @if (Model.TipoReserva == "Tour" && cuposDisponibles.HasValue)
+                {
+                    <text>
+                    if (total > @cuposDisponibles) {
+                        window.validator.showError(adultos, 'Total de personas excede los cupos disponibles (@cuposDisponibles)');
+                        return false;
+                    }
+                    </text>
+                }
+
+                if (total === 0) {
+                    window.validator.showError(adultos, 'Debe haber al menos una persona');
+                    return false;
+                }
+
+                window.validator.clearError(adultos);
+                return true;
+            }
+
+            adultos?.addEventListener('input', validateCapacity);
+            ninos?.addEventListener('input', validateCapacity);
+            seniors?.addEventListener('input', validateCapacity);
+
+            // ? SEMANA 4: Submit con loading overlay
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                // Validar formulario
+                if (!form.checkValidity()) {
+                    form.classList.add('was-validated');
+                    window.toast.error('Por favor completa todos los campos requeridos');
+                    return;
+                }
+
+                // Validar capacidad
+                if (!validateCapacity()) {
+                    return;
+                }
+
+                // Validar fechas
+                if (fechaInicio.value && !window.validator.validateFutureDate(fechaInicio)) {
+                    return;
+                }
+
+                if (fechaInicio.value && fechaFin.value && !window.validator.validateDateRange(fechaInicio, fechaFin)) {
+                    return;
+                }
+
+                // Mostrar loading
+                window.loading.show('Procesando tu reserva...');
+
+                // Deshabilitar botón
+                btnConfirmar.disabled = true;
+                btnConfirmar.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Procesando...';
+
+                // Simular delay mínimo para UX
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // Submit
+                form.submit();
+            });
+
+            // ? SEMANA 4: Info dinámica de precio
+            function updatePriceInfo() {
+                const diasEstancia = fechaFin.value && fechaInicio.value 
+                    ? Math.ceil((new Date(fechaFin.value) - new Date(fechaInicio.value)) / (1000 * 60 * 60 * 24))
+                    : 0;
+                
+                const totalPersonas = parseInt(adultos?.value || 0) + 
+                                     parseInt(ninos?.value || 0) + 
+                                     parseInt(seniors?.value || 0);
+
+                // Actualizar información si hay elementos para mostrar
+                const infoDiv = document.getElementById('precioEstimado');
+                if (infoDiv && diasEstancia > 0 && totalPersonas > 0) {
+                    @if (precioPorNoche.HasValue)
+                    {
+                        <text>
+                        const precioBase = @precioPorNoche * diasEstancia;
+                        infoDiv.innerHTML = `
+                            <div class="alert alert-info">
+                                <strong>Estimado:</strong> ${diasEstancia} noche(s) × ${ window.BlueTravel.utils.formatCurrency(precioBase) }
+                                para ${totalPersonas} persona(s)
+                            </div>
+                        `;
+                        </text>
+                    }
+                }
+            }
+
+            fechaInicio?.addEventListener('change', updatePriceInfo);
+            fechaFin?.addEventListener('change', updatePriceInfo);
+            adultos?.addEventListener('input', updatePriceInfo);
+        });
+    </script>
+}

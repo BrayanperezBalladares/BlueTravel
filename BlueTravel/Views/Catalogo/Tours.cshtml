@@ -1,0 +1,413 @@
+@model PaginatedList<BlueTravel.Models.Tour>
+
+@{
+    ViewData["Title"] = "Tours y Excursiones";
+}
+
+<!-- Header Premium -->
+<section class="page-header-tours position-relative overflow-hidden py-5">
+    <div class="gradient-overlay"></div>
+    <div class="container position-relative z-2">
+        <div class="row align-items-center">
+            <div class="col-lg-8" data-aos="fade-right">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-3">
+                        <li class="breadcrumb-item"><a href="/" class="text-white">Inicio</a></li>
+                        <li class="breadcrumb-item active text-white">Tours</li>
+                    </ol>
+                </nav>
+                <h1 class="display-3 fw-bold text-white mb-3">
+                    Tours & Aventuras
+                </h1>
+                <p class="lead text-white fs-5 mb-0">
+                    Descubre las mejores excursiones y experiencias en Guanacaste
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end" data-aos="fade-left">
+                <div class="stats-card card bg-white shadow-lg border-0 rounded-4 p-4">
+                    <div class="text-center">
+                        <h2 class="text-primary fw-bold mb-1">@Model.TotalCount</h2>
+                        <small class="text-muted">Tours Disponibles</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Filtros Avanzados -->
+<section class="filters-tours sticky-top bg-white shadow-sm py-3" style="top: 76px; z-index: 100;">
+    <div class="container">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label fw-semibold small">
+                    <i class="bi bi-search me-1"></i>Buscar Tour
+                </label>
+                <input type="text" class="form-control" placeholder="Nombre del tour..." id="searchTour">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-semibold small">
+                    <i class="bi bi-geo-alt me-1"></i>Ubicación
+                </label>
+                <select class="form-select" id="filterUbicacion">
+                    <option value="">Todas</option>
+                    <option>Rincón de la Vieja</option>
+                    <option>Tamarindo</option>
+                    <option>Liberia</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-semibold small">
+                    <i class="bi bi-activity me-1"></i>Dificultad
+                </label>
+                <select class="form-select" id="filterDificultad">
+                    <option value="">Todas</option>
+                    <option>Fácil</option>
+                    <option>Moderado</option>
+                    <option>Difícil</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-semibold small">
+                    <i class="bi bi-clock me-1"></i>Duración
+                </label>
+                <select class="form-select" id="filterDuracion">
+                    <option value="">Cualquiera</option>
+                    <option value="0-4">Medio día (< 4h)</option>
+                    <option value="4-8">Día completo (4-8h)</option>
+                    <option value="8+">Más de 8h</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold small">
+                    <i class="bi bi-arrow-down-up me-1"></i>Ordenar por
+                </label>
+                <select class="form-select" id="sortTours">
+                    <option value="relevancia">Más relevante</option>
+                    <option value="precio-asc">Precio: menor a mayor</option>
+                    <option value="precio-desc">Precio: mayor a menor</option>
+                    <option value="nombre">Nombre A-Z</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Grid de Tours -->
+<section class="tours-section py-5 bg-light">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <p class="text-muted mb-0">
+                <strong class="text-dark fs-5" id="tourCount">@Model.Items.Count</strong> tours en esta página
+            </p>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-primary" id="filterToggle">
+                    <i class="bi bi-funnel"></i> Filtros
+                </button>
+            </div>
+        </div>
+
+        @if (!Model.Items.Any())
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-compass text-muted" style="font-size: 5rem;"></i>
+                <h3 class="mt-4">No hay tours disponibles</h3>
+                <p class="text-muted">Vuelve a intentarlo más tarde</p>
+            </div>
+        }
+        else
+        {
+            <div class="row g-4" id="toursContainer">
+                @foreach (var tour in Model.Items)
+                {
+                    <div class="col-lg-6 tour-item" 
+                         data-nombre="@tour.Nombre.ToLower()"
+                         data-ubicacion="@tour.Ubicacion"
+                         data-dificultad="@tour.NivelDificultad"
+                         data-duracion="@tour.Duracion"
+                         data-precio="@tour.Precio"
+                         data-aos="fade-up">
+                        <div class="card tour-card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                            <div class="row g-0">
+                                <!-- Imagen -->
+                                <div class="col-md-5 position-relative">
+                                    @if (!string.IsNullOrEmpty(tour.ImagenUrl))
+                                    {
+                                        <img src="@tour.ImagenUrl" 
+                                             class="tour-img h-100 w-100" 
+                                             alt="@tour.Nombre">
+                                    }
+                                    else
+                                    {
+                                        <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=500&h=400&fit=crop" 
+                                             class="tour-img h-100 w-100" 
+                                             alt="Tour">
+                                    }
+                                    
+                                    <!-- Badges sobre imagen -->
+                                    <div class="position-absolute top-0 start-0 m-3">
+                                        @if (tour.CuposReservados >= tour.CuposTotales * 0.8m)
+                                        {
+                                            <span class="badge bg-danger rounded-pill">
+                                                <i class="bi bi-fire me-1"></i>Pocos Cupos
+                                            </span>
+                                        }
+                                        @if (tour.DescuentoGrupo > 0)
+                                        {
+                                            <span class="badge bg-success rounded-pill ms-1">
+                                                @tour.DescuentoGrupo% OFF
+                                            </span>
+                                        }
+                                    </div>
+
+                                    <!-- Dificultad Badge -->
+                                    <div class="position-absolute bottom-0 start-0 m-3">
+                                        <span class="badge @GetDificultadClass(tour.NivelDificultad) rounded-pill px-3">
+                                            <i class="bi bi-activity me-1"></i>@tour.NivelDificultad
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Contenido -->
+                                <div class="col-md-7">
+                                    <div class="card-body p-4">
+                                        <!-- Ubicación -->
+                                        <div class="d-flex align-items-center gap-2 mb-2">
+                                            <i class="bi bi-geo-alt-fill text-primary"></i>
+                                            <small class="text-muted fw-semibold">@tour.Ubicacion</small>
+                                        </div>
+
+                                        <!-- Título -->
+                                        <h4 class="card-title fw-bold mb-2">@tour.Nombre</h4>
+
+                                        <!-- Descripción -->
+                                        <p class="card-text text-muted small mb-3" style="height: 3rem; overflow: hidden;">
+                                            @(tour.Descripcion?.Length > 120 ? tour.Descripcion.Substring(0, 120) + "..." : tour.Descripcion)
+                                        </p>
+
+                                        <!-- Info Iconos -->
+                                        <div class="d-flex flex-wrap gap-3 mb-3">
+                                            <small class="text-muted">
+                                                <i class="bi bi-clock-fill text-primary me-1"></i>
+                                                @tour.Duracion horas
+                                            </small>
+                                            <small class="text-muted">
+                                                <i class="bi bi-people-fill text-primary me-1"></i>
+                                                @tour.CuposTotales cupos
+                                            </small>
+                                            @if (tour.EdadMinima > 0)
+                                            {
+                                                <small class="text-muted">
+                                                    <i class="bi bi-person-fill text-primary me-1"></i>
+                                                    @tour.EdadMinima+ años
+                                                </small>
+                                            }
+                                        </div>
+
+                                        <!-- Barra de Disponibilidad -->
+                                        @{
+                                            var disponibilidad = ((decimal)(tour.CuposTotales - tour.CuposReservados) / tour.CuposTotales) * 100;
+                                            var barColor = disponibilidad > 50 ? "success" : disponibilidad > 20 ? "warning" : "danger";
+                                        }
+                                        <div class="mb-3">
+                                            <div class="d-flex justify-content-between mb-1">
+                                                <small class="text-muted">Disponibilidad</small>
+                                                <small class="fw-bold text-@barColor">
+                                                    @((tour.CuposTotales - tour.CuposReservados)) cupos
+                                                </small>
+                                            </div>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-@barColor" 
+                                                     style="width: @disponibilidad%"></div>
+                                            </div>
+                                        </div>
+
+                                        <hr class="my-3" />
+
+                                        <!-- Precio y CTA -->
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <small class="text-muted d-block">Desde</small>
+                                                <h3 class="mb-0 fw-bold text-primary">
+                                                    @tour.Precio.ToString("C")
+                                                    <small class="text-muted fs-6 fw-normal">/persona</small>
+                                                </h3>
+                                                @* Precio niños removido temporalmente *@ @if (false)
+                                                {
+                                                    <small class="text-success">
+                                                        @* Niños: precio *@
+                                                    </small>
+                                                }
+                                            </div>
+                                            <a href="@Url.Action("Details", "Catalogo", new { tipo = "tour", id = tour.Id })" 
+                                               class="btn btn-primary rounded-pill px-4">
+                                                Ver Detalles
+                                                <i class="bi bi-arrow-right ms-2"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- ? SEMANA 3: PAGINACIÓN -->
+        @if (Model.TotalPages > 1)
+        {
+            @await Html.PartialAsync("_Pagination", Model)
+        }
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-tours bg-gradient text-white py-5">
+    <div class="container text-center">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mx-auto" data-aos="zoom-in">
+                <h2 class="display-5 fw-bold mb-3">¿Buscas una Experiencia Personalizada?</h2>
+                <p class="lead mb-4">Creamos tours a tu medida con guías expertos certificados</p>
+                <a href="/Account/Register" class="btn btn-light btn-lg rounded-pill px-5 shadow-lg hover-lift">
+                    <i class="bi bi-envelope me-2"></i>Contáctanos
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+@functions {
+    string GetDificultadClass(string? dificultad)
+    {
+        return dificultad?.ToLower() switch
+        {
+            "fácil" => "bg-success",
+            "moderado" => "bg-warning text-dark",
+            "difícil" => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+}
+
+@section Styles {
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <style>
+        .page-header-tours {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+        }
+
+        .gradient-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=1600&h=400&fit=crop') center/cover;
+            opacity: 0.2;
+        }
+
+        .tour-card {
+            transition: all 0.3s ease;
+        }
+
+        .tour-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+        }
+
+        .tour-img {
+            object-fit: cover;
+            transition: transform 0.5s ease;
+            min-height: 280px;
+        }
+
+        .tour-card:hover .tour-img {
+            transform: scale(1.05);
+        }
+
+        .bg-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .breadcrumb-item a {
+            text-decoration: none;
+        }
+
+        .breadcrumb-item + .breadcrumb-item::before {
+            content: "›";
+            font-size: 1.2rem;
+            color: white;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 600, once: true });
+
+        // Filtros
+        document.getElementById('searchTour')?.addEventListener('input', filterTours);
+        document.getElementById('filterUbicacion')?.addEventListener('change', filterTours);
+        document.getElementById('filterDificultad')?.addEventListener('change', filterTours);
+        document.getElementById('filterDuracion')?.addEventListener('change', filterTours);
+        document.getElementById('sortTours')?.addEventListener('change', sortTours);
+
+        function filterTours() {
+            const search = document.getElementById('searchTour').value.toLowerCase();
+            const ubicacion = document.getElementById('filterUbicacion').value;
+            const dificultad = document.getElementById('filterDificultad').value.toLowerCase();
+            const duracion = document.getElementById('filterDuracion').value;
+
+            const items = document.querySelectorAll('.tour-item');
+            let visibleCount = 0;
+
+            items.forEach(item => {
+                const nombre = item.dataset.nombre;
+                const itemUbicacion = item.dataset.ubicacion;
+                const itemDificultad = (item.dataset.dificultad || '').toLowerCase();
+                const itemDuracion = parseFloat(item.dataset.duracion);
+
+                let visible = true;
+
+                if (search && !nombre.includes(search)) visible = false;
+                if (ubicacion && itemUbicacion !== ubicacion) visible = false;
+                if (dificultad && itemDificultad !== dificultad) visible = false;
+                
+                if (duracion) {
+                    const [min, max] = duracion.split('-').map(d => parseFloat(d.replace('+', '')));
+                    if (max && (itemDuracion < min || itemDuracion > max)) visible = false;
+                    if (!max && itemDuracion < min) visible = false;
+                }
+
+                item.style.display = visible ? 'block' : 'none';
+                if (visible) visibleCount++;
+            });
+
+            document.getElementById('tourCount').textContent = visibleCount;
+        }
+
+        function sortTours() {
+            const container = document.getElementById('toursContainer');
+            const items = Array.from(document.querySelectorAll('.tour-item'));
+            const sortBy = document.getElementById('sortTours').value;
+
+            items.sort((a, b) => {
+                switch(sortBy) {
+                    case 'precio-asc':
+                        return parseFloat(a.dataset.precio) - parseFloat(b.dataset.precio);
+                    case 'precio-desc':
+                        return parseFloat(b.dataset.precio) - parseFloat(a.dataset.precio);
+                    case 'nombre':
+                        return a.dataset.nombre.localeCompare(b.dataset.nombre);
+                    default:
+                        return 0;
+                }
+            });
+
+            items.forEach(item => container.appendChild(item));
+        }
+    </script>
+}

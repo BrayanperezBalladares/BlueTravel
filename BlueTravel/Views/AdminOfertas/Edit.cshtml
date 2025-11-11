@@ -1,0 +1,94 @@
+@model BlueTravel.Models.Oferta
+
+@{
+    ViewData["Title"] = $"Editar: {Model.Titulo}";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0">
+                        <i class="bi bi-pencil-square me-2"></i>
+                        Editar Oferta: @Model.Titulo
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Titulo" class="form-label fw-bold"></label>
+                            <input asp-for="Titulo" class="form-control form-control-lg" />
+                            <span asp-validation-for="Titulo" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Descripcion" class="form-label fw-bold"></label>
+                            <textarea asp-for="Descripcion" class="form-control" rows="5"></textarea>
+                            <span asp-validation-for="Descripcion" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Precio" class="form-label fw-bold"></label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text">?</span>
+                                <input asp-for="Precio" class="form-control" type="number" step="0.01" />
+                            </div>
+                            <span asp-validation-for="Precio" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="FechaInicio" class="form-label fw-bold"></label>
+                                <input asp-for="FechaInicio" class="form-control" type="date" />
+                                <span asp-validation-for="FechaInicio" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="FechaFin" class="form-label fw-bold"></label>
+                                <input asp-for="FechaFin" class="form-control" type="date" />
+                                <span asp-validation-for="FechaFin" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        @{
+                            var diasRestantes = (Model.FechaFin - DateTime.Now).Days;
+                            var estaActiva = diasRestantes >= 0;
+                        }
+
+                        @if (!estaActiva)
+                        {
+                            <div class="alert alert-danger border-0">
+                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                <strong>Oferta Vencida:</strong> Esta oferta expiró el @Model.FechaFin.ToString("dd/MM/yyyy"). 
+                                Actualiza las fechas para reactivarla.
+                            </div>
+                        }
+                        else if (diasRestantes <= 7)
+                        {
+                            <div class="alert alert-warning border-0">
+                                <i class="bi bi-clock me-2"></i>
+                                <strong>Próxima a vencer:</strong> Esta oferta vence en @diasRestantes día(s).
+                            </div>
+                        }
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-warning btn-lg px-5 text-dark">
+                                <i class="bi bi-save me-2"></i>Guardar Cambios
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg px-4">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

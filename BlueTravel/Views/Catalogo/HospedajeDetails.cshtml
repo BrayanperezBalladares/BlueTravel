@@ -1,0 +1,432 @@
+@model BlueTravel.Models.Hospedaje
+
+@{
+    ViewData["Title"] = Model.Nombre;
+}
+
+<!-- Hero Image Gallery -->
+<section class="detail-hero position-relative">
+    <div class="container-fluid p-0">
+        <div class="row g-2">
+            <div class="col-md-8">
+                <div class="main-image-wrapper">
+                    <img src="@(Model.ImagenUrl ?? "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&h=600&fit=crop")" 
+                         alt="@Model.Nombre" class="img-fluid w-100 main-image">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row g-2">
+                    <div class="col-12">
+                        <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=600&h=300&fit=crop" 
+                             alt="Vista 1" class="img-fluid w-100 gallery-img">
+                    </div>
+                    <div class="col-12">
+                        <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=300&fit=crop" 
+                             alt="Vista 2" class="img-fluid w-100 gallery-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Floating Action Button -->
+    <button class="btn btn-light position-absolute bottom-0 end-0 m-4 shadow-lg rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#galleryModal">
+        <i class="bi bi-images me-2"></i>Ver todas las fotos
+    </button>
+</section>
+
+<!-- Main Content -->
+<section class="detail-content py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Left Column: Details -->
+            <div class="col-lg-8">
+                <!-- Header -->
+                <div class="mb-4" data-aos="fade-up">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                            <li class="breadcrumb-item"><a href="/Catalogo/Hospedajes">Hospedajes</a></li>
+                            <li class="breadcrumb-item active">@Model.Nombre</li>
+                        </ol>
+                    </nav>
+                    <h1 class="display-4 fw-bold mb-3">@Model.Nombre</h1>
+                    <div class="d-flex align-items-center gap-3 flex-wrap mb-3">
+                        <span class="badge bg-success px-3 py-2">
+                            <i class="bi bi-star-fill me-1"></i>4.8 (156 reseñas)
+                        </span>
+                        <span class="text-muted">
+                            <i class="bi bi-geo-alt-fill me-1"></i>@Model.Ubicacion
+                        </span>
+                        <span class="text-muted">
+                            <i class="bi bi-people-fill me-1"></i>Hasta @Model.CapacidadMaxima personas
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Descripción -->
+                <div class="card border-0 shadow-sm mb-4" data-aos="fade-up">
+                    <div class="card-body p-4">
+                        <h3 class="fw-bold mb-3">Acerca de este alojamiento</h3>
+                        <p class="lead text-muted">@Model.Descripcion</p>
+                    </div>
+                </div>
+
+                <!-- Características -->
+                <div class="card border-0 shadow-sm mb-4" data-aos="fade-up">
+                    <div class="card-body p-4">
+                        <h3 class="fw-bold mb-4">¿Qué ofrece este lugar?</h3>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3">
+                                    <i class="bi bi-wifi text-primary fs-3"></i>
+                                    <div>
+                                        <strong>WiFi gratis</strong>
+                                        <br /><small class="text-muted">Alta velocidad</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3">
+                                    <i class="bi bi-p-circle text-primary fs-3"></i>
+                                    <div>
+                                        <strong>Estacionamiento</strong>
+                                        <br /><small class="text-muted">Gratis en las instalaciones</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3">
+                                    <i class="bi bi-water text-primary fs-3"></i>
+                                    <div>
+                                        <strong>Piscina</strong>
+                                        <br /><small class="text-muted">Piscina al aire libre</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3">
+                                    <i class="bi bi-snow text-primary fs-3"></i>
+                                    <div>
+                                        <strong>Aire acondicionado</strong>
+                                        <br /><small class="text-muted">En todas las habitaciones</small>
+                                    </div>
+                                </div>
+                            </div>
+                            @if (Model.PermiteNinos)
+                            {
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3">
+                                        <i class="bi bi-heart-fill text-danger fs-3"></i>
+                                        <div>
+                                            <strong>Apto para niños</strong>
+                                            <br /><small class="text-muted">Familias bienvenidas</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            @if (Model.PermiteMascotas)
+                            {
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3">
+                                        <i class="bi bi-heart-fill text-success fs-3"></i>
+                                        <div>
+                                            <strong>Se admiten mascotas</strong>
+                                            <br /><small class="text-muted">Consultar restricciones</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Políticas -->
+                <div class="card border-0 shadow-sm mb-4" data-aos="fade-up">
+                    <div class="card-body p-4">
+                        <h3 class="fw-bold mb-4">Políticas del hospedaje</h3>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="policy-item">
+                                    <i class="bi bi-clock-fill text-success fs-4 me-3"></i>
+                                    <div>
+                                        <strong>Check-in</strong>
+                                        <p class="mb-0 text-muted">A partir de las @Model.HoraCheckIn:00</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="policy-item">
+                                    <i class="bi bi-clock-fill text-danger fs-4 me-3"></i>
+                                    <div>
+                                        <strong>Check-out</strong>
+                                        <p class="mb-0 text-muted">Antes de las @Model.HoraCheckOut:00</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="policy-item">
+                                    <i class="bi bi-people-fill text-primary fs-4 me-3"></i>
+                                    <div>
+                                        <strong>Capacidad</strong>
+                                        <p class="mb-0 text-muted">
+                                            @Model.PersonasIncluidasEnPrecio personas incluidas<br />
+                                            Máximo: @Model.CapacidadMaxima personas
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="policy-item">
+                                    <i class="bi bi-cash-coin text-warning fs-4 me-3"></i>
+                                    <div>
+                                        <strong>Cargos extras</strong>
+                                        <p class="mb-0 text-muted">
+                                            @Model.CargoPorPersonaExtra.ToString("C") por persona adicional
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ubicación -->
+                <div class="card border-0 shadow-sm mb-4" data-aos="fade-up">
+                    <div class="card-body p-4">
+                        <h3 class="fw-bold mb-4">
+                            <i class="bi bi-geo-alt-fill text-primary me-2"></i>Ubicación
+                        </h3>
+                        <p class="lead mb-3">@Model.Ubicacion, Guanacaste, Costa Rica</p>
+                        <div class="map-placeholder bg-light rounded-3 p-5 text-center">
+                            <i class="bi bi-map text-muted" style="font-size: 4rem;"></i>
+                            <p class="text-muted mt-3">Mapa de ubicación</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Booking Card -->
+            <div class="col-lg-4">
+                <div class="sticky-booking-card" style="top: 100px;">
+                    <div class="card border-0 shadow-lg" data-aos="fade-left">
+                        <div class="card-body p-4">
+                            <!-- Precio -->
+                            <div class="text-center mb-4">
+                                <div class="display-4 fw-bold text-primary mb-2">
+                                    @Model.PrecioPorNoche.ToString("C")
+                                    <small class="fs-6 text-muted fw-normal">/noche</small>
+                                </div>
+                                <div class="d-flex justify-content-center gap-1 mb-2">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-half text-warning"></i>
+                                    <span class="ms-2 text-muted">(4.8)</span>
+                                </div>
+                            </div>
+
+                            <hr />
+
+                            <!-- Formulario de reserva rápida -->
+                            <form asp-controller="Reservas" asp-action="CreateHospedaje" method="get">
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">
+                                        <i class="bi bi-calendar-event me-1"></i>Check-in
+                                    </label>
+                                    <input type="date" class="form-control form-control-lg" name="fechaInicio" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">
+                                        <i class="bi bi-calendar-check me-1"></i>Check-out
+                                    </label>
+                                    <input type="date" class="form-control form-control-lg" name="fechaFin" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">
+                                        <i class="bi bi-people me-1"></i>Huéspedes
+                                    </label>
+                                    <select class="form-select form-select-lg" name="adultos">
+                                        @for (int i = 1; i <= Model.CapacidadMaxima; i++)
+                                        {
+                                            <option value="@i">@i @(i == 1 ? "persona" : "personas")</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-100 btn-lg rounded-pill mb-3">
+                                    <i class="bi bi-calendar-check me-2"></i>Reservar Ahora
+                                </button>
+                            </form>
+
+                            <small class="text-muted d-block text-center mb-3">
+                                No se hará ningún cargo todavía
+                            </small>
+
+                            <!-- Info adicional -->
+                            <div class="bg-light p-3 rounded-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Cancelación gratis</span>
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Confirmación inmediata</span>
+                                    <i class="bi bi-lightning-fill text-warning"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trust Badges -->
+                    <div class="text-center mt-4">
+                        <small class="text-muted d-block mb-2">Pago seguro con</small>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" 
+                             alt="Stripe" height="25">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Reviews Section -->
+<section class="reviews-section bg-light py-5">
+    <div class="container">
+        <h2 class="display-5 fw-bold mb-4">Reseñas de huéspedes</h2>
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <div class="d-flex gap-1">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                            </div>
+                            <small class="text-muted">Hace 2 días</small>
+                        </div>
+                        <p class="mb-3">"Excelente ubicación, instalaciones muy limpias y personal super amable. Definitivamente volveremos!"</p>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="avatar bg-primary bg-opacity-10 rounded-circle p-2">
+                                <i class="bi bi-person-fill text-primary"></i>
+                            </div>
+                            <strong>María R.</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <div class="d-flex gap-1">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star text-warning"></i>
+                            </div>
+                            <small class="text-muted">Hace 5 días</small>
+                        </div>
+                        <p class="mb-3">"Muy bonito lugar, solo mejoraría un poco el desayuno. Pero en general muy recomendado."</p>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="avatar bg-success bg-opacity-10 rounded-circle p-2">
+                                <i class="bi bi-person-fill text-success"></i>
+                            </div>
+                            <strong>Carlos M.</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <div class="d-flex gap-1">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                            </div>
+                            <small class="text-muted">Hace 1 semana</small>
+                        </div>
+                        <p class="mb-3">"¡Perfecto para familias! Los niños disfrutaron mucho la piscina."</p>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="avatar bg-danger bg-opacity-10 rounded-circle p-2">
+                                <i class="bi bi-person-fill text-danger"></i>
+                            </div>
+                            <strong>Ana L.</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <style>
+        .main-image {
+            height: 600px;
+            object-fit: cover;
+            border-radius: 0;
+        }
+
+        .gallery-img {
+            height: 295px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-img:hover {
+            transform: scale(1.05);
+        }
+
+        .sticky-booking-card {
+            position: sticky;
+        }
+
+        .policy-item {
+            display: flex;
+            align-items-start;
+            gap: 1rem;
+        }
+
+        .map-placeholder {
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @@media (max-width: 768px) {
+            .main-image {
+                height: 400px;
+            }
+            
+            .sticky-booking-card {
+                position: relative;
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 600, once: true });
+    </script>
+}

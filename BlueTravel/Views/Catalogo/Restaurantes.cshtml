@@ -1,0 +1,155 @@
+﻿@model IEnumerable<BlueTravel.Models.Restaurante>
+@{
+    ViewData["Title"] = "Restaurantes";
+}
+
+<div class="container my-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">Restaurantes Recomendados</h1>
+        <p class="lead text-muted">Descubre la gastronomía de Guanacaste</p>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center" role="alert">
+            <i class="fas fa-info-circle fa-2x mb-3"></i>
+            <h4>No hay restaurantes disponibles</h4>
+            <p>Pronto agregaremos nuevas opciones gastronómicas.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm hover-card">
+                        <img src="@(item.ImagenUrl ?? "/images/default-restaurant.jpg")" 
+                             class="card-img-top" 
+                             alt="@item.Nombre"
+                             style="height: 250px; object-fit: cover;" />
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@item.Nombre</h5>
+                            <p class="text-muted mb-2">
+                                <i class="fas fa-map-marker-alt"></i> @item.Ubicacion
+                            </p>
+                            <div class="mb-2">
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-utensils"></i> @item.TipoComida
+                                </span>
+                            </div>
+                            <p class="text-muted fst-italic">
+                                <i class="fas fa-star text-warning"></i> Especialidad: @item.Especialidad
+                            </p>
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="text-danger fw-bold fs-5">@item.PrecioPromedio.ToString("C")</span>
+                                        <small class="text-muted">/ persona</small>
+                                    </div>
+                                    <button type="button" 
+                                            class="btn btn-outline-danger btn-sm"
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#restauranteModal@item.Id">
+                                        <i class="fas fa-book"></i> Ver Menú
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal para cada restaurante -->
+                <div class="modal fade" id="restauranteModal@item.Id" tabindex="-1" aria-labelledby="modalLabel@item.Id" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header border-0">
+                                <div>
+                                    <h4 class="modal-title fw-bold" id="modalLabel@item.Id">@item.Nombre</h4>
+                                    <p class="text-muted mb-0">
+                                        <i class="fas fa-map-marker-alt"></i> @item.Ubicacion
+                                    </p>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <img src="@(item.ImagenUrl ?? "/images/default-restaurant.jpg")" 
+                                             class="img-fluid rounded shadow-sm" 
+                                             alt="@item.Nombre" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <h6 class="fw-bold text-primary">
+                                                <i class="fas fa-utensils me-2"></i>Tipo de Cocina
+                                            </h6>
+                                            <p class="mb-0">@item.TipoComida</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <h6 class="fw-bold text-primary">
+                                                <i class="fas fa-star me-2"></i>Especialidad de la Casa
+                                            </h6>
+                                            <p class="mb-0 fst-italic">@item.Especialidad</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <h6 class="fw-bold text-primary">
+                                                <i class="fas fa-dollar-sign me-2"></i>Precio Promedio
+                                            </h6>
+                                            <p class="mb-0">
+                                                <span class="text-danger fw-bold fs-4">@item.PrecioPromedio.ToString("C")</span>
+                                                <small class="text-muted"> por persona</small>
+                                            </p>
+                                        </div>
+                                        <div class="alert alert-info border-0 shadow-sm mt-4">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            <strong>Información:</strong> Próximamente podrás hacer reservas directamente desde aquí.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer border-0 bg-light">
+                                <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">
+                                    Cerrar
+                                </button>
+                                <a href="tel:+50612345678" class="btn btn-primary rounded-pill">
+                                    <i class="fas fa-phone me-2"></i>Llamar para Reservar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .hover-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .hover-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .modal-content {
+        border-radius: 1rem;
+        border: none;
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 1rem 1rem 0 0;
+    }
+
+    .modal-header .btn-close {
+        filter: brightness(0) invert(1);
+    }
+
+    .modal-footer {
+        border-radius: 0 0 1rem 1rem;
+    }
+</style>

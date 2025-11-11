@@ -1,0 +1,102 @@
+@model PaginatedList<object>
+
+@if (Model.TotalPages > 1)
+{
+    <nav aria-label="Navegación de página">
+        <ul class="pagination justify-content-center">
+            <!-- Botón Primera Página -->
+            <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
+                <a class="page-link" 
+                   href="?pageNumber=1&pageSize=@Model.PageSize" 
+                   aria-label="Primera">
+                    <i class="bi bi-chevron-double-left"></i>
+                </a>
+            </li>
+
+            <!-- Botón Anterior -->
+            <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                <a class="page-link" 
+                   href="?pageNumber=@(Model.PageIndex - 1)&pageSize=@Model.PageSize" 
+                   aria-label="Anterior">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            </li>
+
+            <!-- Números de Página -->
+            @foreach (var pageNum in Model.GetPageRange())
+            {
+                <li class="page-item @(pageNum == Model.PageIndex ? "active" : "")">
+                    <a class="page-link" href="?pageNumber=@pageNum&pageSize=@Model.PageSize">
+                        @pageNum
+                    </a>
+                </li>
+            }
+
+            <!-- Botón Siguiente -->
+            <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                <a class="page-link" 
+                   href="?pageNumber=@(Model.PageIndex + 1)&pageSize=@Model.PageSize" 
+                   aria-label="Siguiente">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+
+            <!-- Botón Última Página -->
+            <li class="page-item @(Model.PageIndex == Model.TotalPages ? "disabled" : "")">
+                <a class="page-link" 
+                   href="?pageNumber=@Model.TotalPages&pageSize=@Model.PageSize" 
+                   aria-label="Última">
+                    <i class="bi bi-chevron-double-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Información de Paginación -->
+    <div class="text-center text-muted mb-4">
+        <small>
+            Mostrando <strong>@Model.FirstItemIndex</strong> - <strong>@Model.LastItemIndex</strong> 
+            de <strong>@Model.TotalCount</strong> resultados
+            (Página <strong>@Model.PageIndex</strong> de <strong>@Model.TotalPages</strong>)
+        </small>
+    </div>
+
+    <!-- Selector de Tamaño de Página -->
+    <div class="text-center mb-4">
+        <div class="btn-group btn-group-sm" role="group" aria-label="Tamaño de página">
+            <span class="btn btn-outline-secondary disabled">
+                <small>Mostrar:</small>
+            </span>
+            @foreach (var size in new[] { 6, 12, 24, 48 })
+            {
+                <a href="?pageNumber=1&pageSize=@size" 
+                   class="btn btn-outline-primary @(Model.PageSize == size ? "active" : "")">
+                    @size
+                </a>
+            }
+        </div>
+    </div>
+}
+
+@section Styles {
+    <style>
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+        }
+
+        .pagination .page-link {
+            color: #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #f8f9fa;
+            color: #764ba2;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #6c757d;
+        }
+    </style>
+}

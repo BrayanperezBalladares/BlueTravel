@@ -1,0 +1,310 @@
+@model BlueTravel.Models.Pago
+
+@{
+    ViewData["Title"] = "Procesar Pago";
+    var reserva = ViewBag.Reserva as BlueTravel.Models.Reserva;
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Header con branding -->
+            <div class="text-center mb-4">
+                <div class="d-inline-flex align-items-center gap-3 mb-3">
+                    <i class="bi bi-shield-check text-success" style="font-size: 3rem;"></i>
+                    <div class="text-start">
+                        <h2 class="mb-0">Pago Seguro</h2>
+                        <small class="text-muted">Powered by Stripe</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Columna Izquierda: Resumen -->
+                <div class="col-md-5">
+                    <div class="card shadow-sm sticky-top" style="top: 20px;">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="bi bi-receipt"></i> Resumen de Compra</h5>
+                        </div>
+                        <div class="card-body">
+                            @if (reserva != null)
+                            {
+                                <div class="mb-3">
+                                    <small class="text-muted d-block">SERVICIO</small>
+                                    <strong>@reserva.ItemNombre</strong>
+                                    <span class="badge bg-primary ms-2">@reserva.TipoReserva</span>
+                                </div>
+
+                                <hr />
+
+                                <div class="row mb-2">
+                                    <div class="col-6"><small class="text-muted">Fecha inicio:</small></div>
+                                    <div class="col-6 text-end">@reserva.FechaInicio.ToString("dd/MM/yyyy")</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-6"><small class="text-muted">Fecha fin:</small></div>
+                                    <div class="col-6 text-end">@reserva.FechaFin.ToString("dd/MM/yyyy")</div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-6"><small class="text-muted">Personas:</small></div>
+                                    <div class="col-6 text-end"><strong>@reserva.DetallePersonas</strong></div>
+                                </div>
+
+                                <hr />
+
+                                <div class="row mb-2">
+                                    <div class="col-6">Precio base:</div>
+                                    <div class="col-6 text-end">@reserva.PrecioBase.ToString("C")</div>
+                                </div>
+                                @if (reserva.CargoPersonasExtra > 0)
+                                {
+                                    <div class="row mb-2">
+                                        <div class="col-6"><small>Personas extra:</small></div>
+                                        <div class="col-6 text-end">@reserva.CargoPersonasExtra.ToString("C")</div>
+                                    </div>
+                                }
+                                @if (reserva.DescuentoAplicado > 0)
+                                {
+                                    <div class="row mb-2 text-success">
+                                        <div class="col-6"><small>Descuento:</small></div>
+                                        <div class="col-6 text-end">-@reserva.DescuentoAplicado.ToString("C")</div>
+                                    </div>
+                                }
+                                <div class="row mb-2">
+                                    <div class="col-6"><small>IVA (13%):</small></div>
+                                    <div class="col-6 text-end">@Model.Impuestos.ToString("C")</div>
+                                </div>
+
+                                <hr class="my-3" />
+
+                                <div class="row">
+                                    <div class="col-6"><strong>TOTAL A PAGAR:</strong></div>
+                                    <div class="col-6 text-end">
+                                        <h3 class="text-success mb-0">@Model.TotalPagado.ToString("C")</h3>
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="alert alert-info mt-3 mb-0">
+                                <i class="bi bi-info-circle"></i>
+                                <small>
+                                    Procesado con <strong>Stripe</strong><br />
+                                    Pago seguro con encriptación SSL
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Formulario de Pago -->
+                <div class="col-md-7">
+                    <div class="card shadow">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="bi bi-credit-card"></i> Información de Pago</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form asp-action="Create" method="post" id="payment-form">
+                                <input type="hidden" asp-for="ReservaId" />
+                                
+                                <!-- Método de Pago -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">Método de Pago</label>
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="radio" class="btn-check" name="metodoRadio" id="metodoTarjeta" value="@((int)MetodoPago.TarjetaCredito)" checked>
+                                        <label class="btn btn-outline-primary" for="metodoTarjeta">
+                                            <i class="bi bi-credit-card"></i> Tarjeta
+                                        </label>
+                                        
+                                        <input type="radio" class="btn-check" name="metodoRadio" id="metodoSinpe" value="@((int)MetodoPago.SinpeMovil)">
+                                        <label class="btn btn-outline-primary" for="metodoSinpe">
+                                            <i class="bi bi-phone"></i> SINPE
+                                        </label>
+                                        
+                                        <input type="radio" class="btn-check" name="metodoRadio" id="metodoPaypal" value="@((int)MetodoPago.PayPal)">
+                                        <label class="btn btn-outline-primary" for="metodoPaypal">
+                                            <i class="bi bi-paypal"></i> PayPal
+                                        </label>
+                                    </div>
+                                    <select asp-for="Metodo" class="form-select d-none" id="metodoHidden">
+                                        <option value="@((int)MetodoPago.TarjetaCredito)">Tarjeta</option>
+                                        <option value="@((int)MetodoPago.SinpeMovil)">SINPE</option>
+                                        <option value="@((int)MetodoPago.PayPal)">PayPal</option>
+                                    </select>
+                                </div>
+
+                                <!-- Campos de Tarjeta -->
+                                <div id="camposTarjeta">
+                                    <div class="alert alert-warning">
+                                        <i class="bi bi-lightning-charge"></i>
+                                        <strong>Modo TEST de Stripe</strong><br />
+                                        <small>Tarjeta de prueba: <code>4242 4242 4242 4242</code></small>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="cardNumber" class="form-label">Número de Tarjeta</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-credit-card"></i></span>
+                                            <input type="text" class="form-control form-control-lg" id="cardNumber" 
+                                                   placeholder="4242 4242 4242 4242" maxlength="19">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="cardName" class="form-label">Nombre en la Tarjeta</label>
+                                            <input type="text" class="form-control" id="cardName" 
+                                                   placeholder="NOMBRE APELLIDO">
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label for="cardExpiry" class="form-label">Vencimiento</label>
+                                            <input type="text" class="form-control" id="cardExpiry" 
+                                                   placeholder="MM/AA" maxlength="5">
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label for="cardCvv" class="form-label">CVV</label>
+                                            <input type="text" class="form-control" id="cardCvv" 
+                                                   placeholder="123" maxlength="4">
+                                        </div>
+                                    </div>
+
+                                    <input type="hidden" asp-for="UltimosDigitosTarjeta" id="hiddenDigits" />
+                                    <input type="hidden" asp-for="MarcaTarjeta" id="hiddenBrand" />
+                                </div>
+
+                                <!-- Campos de SINPE -->
+                                <div id="camposSinpe" style="display: none;">
+                                    <div class="alert alert-info">
+                                        <i class="bi bi-phone"></i> Para pagar con SINPE Móvil, realiza la transferencia y 
+                                        luego ingresa el número de comprobante.
+                                    </div>
+                                    <div class="mb-3">
+                                        <label asp-for="ReferenciaBancaria" class="form-label">Número de Comprobante</label>
+                                        <input asp-for="ReferenciaBancaria" class="form-control" 
+                                               placeholder="Ej: 202410281234567890" />
+                                    </div>
+                                </div>
+
+                                <!-- Campos de PayPal -->
+                                <div id="camposPaypal" style="display: none;">
+                                    <div class="alert alert-info">
+                                        <i class="bi bi-paypal"></i> Serás redirigido a PayPal para completar el pago.
+                                    </div>
+                                </div>
+
+                                <!-- Badges de Seguridad -->
+                                <div class="d-flex justify-content-around align-items-center my-4 py-3 bg-light rounded">
+                                    <div class="text-center">
+                                        <i class="bi bi-shield-check text-success" style="font-size: 2rem;"></i>
+                                        <br /><small>SSL Seguro</small>
+                                    </div>
+                                    <div class="text-center">
+                                        <i class="bi bi-lock-fill text-primary" style="font-size: 2rem;"></i>
+                                        <br /><small>Encriptado</small>
+                                    </div>
+                                    <div class="text-center">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" 
+                                             alt="Stripe" height="30">
+                                        <br /><small>Powered by Stripe</small>
+                                    </div>
+                                </div>
+
+                                <!-- Botones -->
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-success btn-lg" id="btnPagar">
+                                        <i class="bi bi-lock-fill"></i> 
+                                        <span id="btnTexto">Pagar @Model.TotalPagado.ToString("C")</span>
+                                        <span id="btnLoading" style="display: none;">
+                                            <span class="spinner-border spinner-border-sm"></span> Procesando...
+                                        </span>
+                                    </button>
+                                    <a href="@Url.Action("Details", "Reservas", new { id = Model.ReservaId })" 
+                                       class="btn btn-outline-secondary">
+                                        Cancelar
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Cambiar entre métodos de pago
+        document.querySelectorAll('input[name="metodoRadio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const metodo = parseInt(this.value);
+                document.getElementById('metodoHidden').value = metodo;
+                
+                // Mostrar/ocultar campos
+                document.getElementById('camposTarjeta').style.display = 
+                    (metodo === @((int)MetodoPago.TarjetaCredito) || metodo === @((int)MetodoPago.TarjetaDebito)) ? 'block' : 'none';
+                document.getElementById('camposSinpe').style.display = 
+                    (metodo === @((int)MetodoPago.SinpeMovil)) ? 'block' : 'none';
+                document.getElementById('camposPaypal').style.display = 
+                    (metodo === @((int)MetodoPago.PayPal)) ? 'block' : 'none';
+            });
+        });
+
+        // Formatear número de tarjeta
+        const cardNumber = document.getElementById('cardNumber');
+        cardNumber?.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+
+            // Guardar últimos 4 dígitos
+            if (value.length >= 4) {
+                document.getElementById('hiddenDigits').value = value.slice(-4);
+            }
+
+            // Detectar marca
+            if (value.startsWith('4')) {
+                document.getElementById('hiddenBrand').value = 'Visa';
+            } else if (value.startsWith('5')) {
+                document.getElementById('hiddenBrand').value = 'Mastercard';
+            } else if (value.startsWith('3')) {
+                document.getElementById('hiddenBrand').value = 'American Express';
+            }
+        });
+
+        // Formatear fecha de expiración
+        document.getElementById('cardExpiry')?.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\//g, '');
+            if (value.length >= 2) {
+                e.target.value = value.slice(0, 2) + '/' + value.slice(2, 4);
+            } else {
+                e.target.value = value;
+            }
+        });
+
+        // Animación al enviar
+        document.getElementById('payment-form')?.addEventListener('submit', function() {
+            document.getElementById('btnTexto').style.display = 'none';
+            document.getElementById('btnLoading').style.display = 'inline';
+            document.getElementById('btnPagar').disabled = true;
+        });
+    </script>
+}
+
+@section Styles {
+    <style>
+        .btn-check:checked + .btn-outline-primary {
+            background-color: #0d6efd;
+            color: white;
+        }
+        
+        .sticky-top {
+            position: sticky;
+        }
+        
+        @@media (max-width: 768px) {
+            .sticky-top {
+                position: relative;
+            }
+        }
+    </style>
+}

@@ -1,0 +1,207 @@
+@model PaginatedList<BlueTravel.Models.Reserva>
+
+@{
+    ViewData["Title"] = "Mis Reservas";
+}
+
+<div class="container my-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-5 fw-bold">
+                <i class="fas fa-clipboard-list text-primary"></i> Mis Reservas
+            </h1>
+            <p class="lead text-muted">Gestiona todas tus reservas de hospedajes y tours</p>
+            
+            <!-- ? SEMANA 5: Mostrar total de reservas -->
+            @if (Model.TotalCount > 0)
+            {
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Tienes <strong>@Model.TotalCount</strong> reserva(s) en total
+                </div>
+            }
+        </div>
+    </div>
+
+    @if (!Model.Items.Any())
+    {
+        <div class="alert alert-info text-center" role="alert">
+            <i class="fas fa-info-circle fa-3x mb-3"></i>
+            <h4>No tienes reservas</h4>
+            <p>Explora nuestros hospedajes y tours para hacer tu primera reserva.</p>
+            <a asp-controller="Catalogo" asp-action="Hospedajes" class="btn btn-primary me-2">
+                <i class="fas fa-hotel"></i> Ver Hospedajes
+            </a>
+            <a asp-controller="Catalogo" asp-action="Tours" class="btn btn-success">
+                <i class="fas fa-map-marked-alt"></i> Ver Tours
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var reserva in Model.Items)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header @(reserva.Estado == "Confirmada" ? "bg-success" : reserva.Estado == "Pendiente" ? "bg-warning" : "bg-secondary") text-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold">
+                                    <i class="fas fa-@(reserva.TipoReserva == "Hospedaje" ? "hotel" : "map-marked-alt")"></i>
+                                    @reserva.TipoReserva
+                                </span>
+                                <span class="badge @reserva.EstadoBadgeClass">@reserva.Estado</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@reserva.ItemNombre</h5>
+                            
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar-check"></i> Check-in / Inicio:
+                                </small>
+                                <p class="mb-1">@reserva.FechaInicio.ToString("dd/MM/yyyy")</p>
+                            </div>
+
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar-times"></i> Check-out / Fin:
+                                </small>
+                                <p class="mb-1">@reserva.FechaFin.ToString("dd/MM/yyyy")</p>
+                            </div>
+
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-users"></i> Personas:
+                                </small>
+                                <p class="mb-1">@reserva.CantidadPersonas</p>
+                            </div>
+
+                            <div class="mb-3">
+                                <small class="text-muted">
+                                    <i class="fas fa-moon"></i> Noches / Días:
+                                </small>
+                                <p class="mb-1 fw-bold">@reserva.DiasEstancia</p>
+                            </div>
+
+                            <hr />
+
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-muted">Total:</span>
+                                <h4 class="text-success mb-0">@reserva.PrecioTotal.ToString("C")</h4>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <a asp-action="Details" asp-route-id="@reserva.Id" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-eye"></i> Ver Detalles
+                                </a>
+                                
+                                @* ?? NUEVO: Botón de Pago *@
+                                @if (!reserva.EstaPagada && (reserva.Estado == "Pendiente" || reserva.Estado == "Confirmada"))
+                                {
+                                    <a asp-controller="Pagos" asp-action="Create" asp-route-reservaId="@reserva.Id" 
+                                       class="btn btn-success btn-sm">
+                                        <i class="bi bi-credit-card"></i> Pagar Ahora
+                                    </a>
+                                }
+                                else if (reserva.EstaPagada)
+                                {
+                                    <span class="badge bg-success w-100 py-2">
+                                        <i class="bi bi-check-circle-fill"></i> Pagado
+                                    </span>
+                                    @if (reserva.PagoId.HasValue)
+                                    {
+                                        <a asp-controller="Pagos" asp-action="Details" asp-route-id="@reserva.PagoId" 
+                                           class="btn btn-outline-info btn-sm">
+                                            <i class="bi bi-receipt"></i> Ver Comprobante
+                                        </a>
+                                    }
+                                }
+                                
+                                @if (reserva.Estado == "Pendiente" && !reserva.EstaPagada)
+                                {
+                                    <button type="button" class="btn btn-danger btn-sm w-100"
+                                            onclick="confirmarCancelacion(@reserva.Id)">
+                                        <i class="fas fa-times-circle"></i> Cancelar Reserva
+                                    </button>
+                                    
+                                    <!-- ? SEMANA 4: Form oculto para cancelación -->
+                                    <form id="formCancelar_@reserva.Id" asp-action="CambiarEstado" method="post" style="display:none;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@reserva.Id" />
+                                        <input type="hidden" name="nuevoEstado" value="Cancelada" />
+                                    </form>
+                                }
+                            </div>
+
+                            <small class="text-muted d-block mt-2">
+                                Creada: @reserva.FechaCreacion.ToString("dd/MM/yyyy HH:mm")
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- ? SEMANA 5: PAGINACIÓN -->
+        @if (Model.TotalPages > 1)
+        {
+            <div class="mt-4">
+                @await Html.PartialAsync("_Pagination", Model)
+            </div>
+        }
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // ? SEMANA 4: Modal de confirmación para cancelar reserva
+        function confirmarCancelacion(reservaId) {
+            window.modal.confirm({
+                title: '¿Cancelar Reserva?',
+                message: `
+                    <p class="mb-3">¿Estás seguro de que deseas cancelar esta reserva?</p>
+                    <div class="alert alert-warning">
+                        <strong><i class="bi bi-exclamation-triangle me-2"></i>Ten en cuenta:</strong>
+                        <ul class="mb-0 mt-2 small">
+                            <li>Esta acción no se puede deshacer</li>
+                            <li>Se liberarán los cupos/disponibilidad</li>
+                            <li>Si ya pagaste, el reembolso puede tardar 5-7 días hábiles</li>
+                        </ul>
+                    </div>
+                `,
+                confirmText: 'Sí, cancelar reserva',
+                cancelText: 'No, mantener reserva',
+                type: 'danger',
+                onConfirm: async () => {
+                    // Mostrar loading
+                    window.loading.show('Cancelando reserva...');
+                    
+                    // Simular delay para UX
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    
+                    // Submit form
+                    document.getElementById('formCancelar_' + reservaId).submit();
+                }
+            });
+        }
+
+        // ? SEMANA 4: Mostrar toast de confirmación al cargar (si viene de acción exitosa)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Agregar efecto de fade-in a las cards
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'all 0.4s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 50);
+                }, index * 100);
+            });
+        });
+    </script>
+}

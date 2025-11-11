@@ -1,0 +1,72 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var currentUser = await UserManager.GetUserAsync(User);
+        var isAdmin = User.IsInRole("Admin");
+        
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                @if (isAdmin)
+                {
+                    <i class="fas fa-user-shield text-danger"></i>
+                    <span class="badge bg-danger">Admin</span>
+                }
+                else
+                {
+                    <i class="fas fa-user"></i>
+                    <span class="badge bg-primary">Cliente</span>
+                }
+                @UserManager.GetUserName(User)
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenu">
+                <li><h6 class="dropdown-header">
+                    <i class="fas fa-id-badge"></i> Mi Cuenta
+                </h6></li>
+                <li><a class="dropdown-item" href="#">
+                    <i class="fas fa-user-circle"></i> Mi Perfil
+                </a></li>
+                @if (!isAdmin)
+                {
+                    <li><a class="dropdown-item" asp-controller="Reservas" asp-action="Index">
+                        <i class="fas fa-clipboard-list"></i> Mis Reservas
+                    </a></li>
+                    <li><a class="dropdown-item" href="#">
+                        <i class="fas fa-heart"></i> Mis Favoritos
+                    </a></li>
+                }
+                else
+                {
+                    <li><a class="dropdown-item" asp-controller="Reservas" asp-action="Index">
+                        <i class="fas fa-tasks"></i> Gestionar Reservas
+                    </a></li>
+                }
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="px-3">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="dropdown-item text-danger">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Account" asp-action="Login">
+                <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link btn btn-primary text-white ms-2" asp-controller="Account" asp-action="Register">
+                <i class="fas fa-user-plus"></i> Registrarse
+            </a>
+        </li>
+    }
+</ul>

@@ -1,0 +1,231 @@
+@model IEnumerable<BlueTravel.Models.Pago>
+
+@{
+    ViewData["Title"] = "Administración de Pagos";
+}
+
+<div class="container-fluid my-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2><i class="bi bi-cash-stack"></i> Administración de Pagos</h2>
+            <p class="text-muted">Gestión completa de transacciones y pagos</p>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2">Pagos Aprobados</h6>
+                    <h3 class="card-title">
+                        @Model.Where(p => p.Estado == EstadoPago.Aprobado && !p.EsReembolso).Sum(p => p.TotalPagado).ToString("C")
+                    </h3>
+                    <small>@Model.Count(p => p.Estado == EstadoPago.Aprobado && !p.EsReembolso) transacciones</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2">Pendientes</h6>
+                    <h3 class="card-title">
+                        @Model.Count(p => p.Estado == EstadoPago.Pendiente)
+                    </h3>
+                    <small>
+                        @Model.Where(p => p.Estado == EstadoPago.Pendiente).Sum(p => p.TotalPagado).ToString("C")
+                    </small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2">Rechazados</h6>
+                    <h3 class="card-title">
+                        @Model.Count(p => p.Estado == EstadoPago.Rechazado)
+                    </h3>
+                    <small>
+                        @Model.Where(p => p.Estado == EstadoPago.Rechazado).Sum(p => p.TotalPagado).ToString("C")
+                    </small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-dark">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2">Reembolsos</h6>
+                    <h3 class="card-title">
+                        @Model.Count(p => p.EsReembolso)
+                    </h3>
+                    <small>
+                        @Model.Where(p => p.EsReembolso).Sum(p => Math.Abs(p.TotalPagado)).ToString("C")
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Estado</label>
+                    <select name="estado" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="@((int)EstadoPago.Pendiente)">Pendiente</option>
+                        <option value="@((int)EstadoPago.Aprobado)">Aprobado</option>
+                        <option value="@((int)EstadoPago.Rechazado)">Rechazado</option>
+                        <option value="@((int)EstadoPago.Reembolsado)">Reembolsado</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Método</label>
+                    <select name="metodo" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="@((int)MetodoPago.TarjetaCredito)">Tarjeta Crédito</option>
+                        <option value="@((int)MetodoPago.TarjetaDebito)">Tarjeta Débito</option>
+                        <option value="@((int)MetodoPago.SinpeMovil)">SINPE Móvil</option>
+                        <option value="@((int)MetodoPago.PayPal)">PayPal</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Desde</label>
+                    <input type="date" name="desde" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Hasta</label>
+                    <input type="date" name="hasta" class="form-control" />
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> Filtrar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de Pagos -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Transacción</th>
+                            <th>Usuario</th>
+                            <th>Reserva</th>
+                            <th>Método</th>
+                            <th>Monto</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var pago in Model)
+                        {
+                            <tr class="@(pago.EsReembolso ? "table-secondary" : "")">
+                                <td>
+                                    <strong>#@pago.Id</strong>
+                                </td>
+                                <td>
+                                    <small class="text-muted">
+                                        @(pago.TransaccionExternaId ?? "N/A")
+                                    </small>
+                                    @if (pago.EsReembolso)
+                                    {
+                                        <br />
+                                        <span class="badge bg-dark">REEMBOLSO</span>
+                                    }
+                                </td>
+                                <td>
+                                    <small>@pago.UsuarioId[..8]...</small>
+                                </td>
+                                <td>
+                                    <a href="@Url.Action("Details", "Reservas", new { id = pago.ReservaId })" 
+                                       class="text-decoration-none">
+                                        Reserva #@pago.ReservaId
+                                    </a>
+                                    @if (pago.Reserva != null)
+                                    {
+                                        <br />
+                                        <small class="text-muted">@pago.Reserva.ItemNombre</small>
+                                    }
+                                </td>
+                                <td>
+                                    @switch (pago.Metodo)
+                                    {
+                                        case MetodoPago.TarjetaCredito:
+                                            <i class="bi bi-credit-card"></i>
+                                            break;
+                                        case MetodoPago.SinpeMovil:
+                                            <i class="bi bi-phone"></i>
+                                            break;
+                                        case MetodoPago.PayPal:
+                                            <i class="bi bi-paypal"></i>
+                                            break;
+                                        default:
+                                            <i class="bi bi-cash"></i>
+                                            break;
+                                    }
+                                    <small>@pago.Metodo</small>
+                                    @if (!string.IsNullOrEmpty(pago.UltimosDigitosTarjeta))
+                                    {
+                                        <br />
+                                        <small class="text-muted">**** @pago.UltimosDigitosTarjeta</small>
+                                    }
+                                </td>
+                                <td>
+                                    <strong class="@(pago.TotalPagado < 0 ? "text-danger" : "text-success")">
+                                        @pago.TotalPagado.ToString("C")
+                                    </strong>
+                                    <br />
+                                    <small class="text-muted">IVA: @pago.Impuestos.ToString("C")</small>
+                                </td>
+                                <td>
+                                    <span class="badge @pago.EstadoBadgeClass">
+                                        @pago.Estado
+                                    </span>
+                                </td>
+                                <td>
+                                    @pago.FechaCreacion.ToString("dd/MM/yyyy")
+                                    <br />
+                                    <small class="text-muted">@pago.FechaCreacion.ToString("HH:mm")</small>
+                                </td>
+                                <td>
+                                    <a href="@Url.Action("Details", new { id = pago.Id })" 
+                                       class="btn btn-sm btn-outline-primary" title="Ver Detalles">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botones de Exportación -->
+    <div class="mt-4">
+        <button class="btn btn-success" onclick="exportarExcel()">
+            <i class="bi bi-file-excel"></i> Exportar a Excel
+        </button>
+        <button class="btn btn-danger" onclick="window.print()">
+            <i class="bi bi-file-pdf"></i> Exportar a PDF
+        </button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function exportarExcel() {
+            alert('Función de exportación a Excel en desarrollo...');
+            // TODO: Implementar exportación con EPPlus
+        }
+    </script>
+}

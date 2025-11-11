@@ -1,0 +1,132 @@
+@model IEnumerable<BlueTravel.Models.Tour>
+
+@{
+    ViewData["Title"] = "Gestión de Tours";
+}
+
+<div class="container-fluid my-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-5 fw-bold">
+                <i class="bi bi-compass text-success me-2"></i>
+                Gestión de Tours
+            </h1>
+            <p class="text-muted mb-0">Administra todos los tours del sistema</p>
+        </div>
+        <a asp-action="Create" class="btn btn-success btn-lg rounded-pill px-4">
+            <i class="bi bi-plus-circle me-2"></i>Nuevo Tour
+        </a>
+    </div>
+
+    <!-- Estadísticas rápidas -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">Total Tours</h5>
+                    <h2 class="fw-bold text-success">@Model.Count()</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">Precio Promedio</h5>
+                    <h2 class="fw-bold text-primary">@Model.Average(t => t.Precio).ToString("C")</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">Cupos Totales</h5>
+                    <h2 class="fw-bold text-info">@Model.Sum(t => t.CupoMaximo)</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">Reservados</h5>
+                    <h2 class="fw-bold text-warning">@Model.Sum(t => t.CuposReservados)</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Ubicación</th>
+                            <th>Precio</th>
+                            <th>Dificultad</th>
+                            <th>Cupos</th>
+                            <th>Fecha Disponible</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><strong>#@item.Id</strong></td>
+                                <td>
+                                    <strong>@item.Nombre</strong>
+                                    @if (item.RequiereConfirmacion)
+                                    {
+                                        <span class="badge bg-warning text-dark ms-2">
+                                            <i class="bi bi-shield-check"></i> Requiere Confirmación
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    <i class="bi bi-geo-alt text-danger"></i>
+                                    @item.Ubicacion
+                                </td>
+                                <td class="fw-bold text-success">@item.Precio.ToString("C")</td>
+                                <td>
+                                    <span class="badge bg-@(item.NivelDificultad == "Fácil" ? "success" : item.NivelDificultad == "Moderado" ? "warning" : "danger")">
+                                        @item.NivelDificultad
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="text-success fw-bold">@item.CuposDisponibles</span> / @item.CupoMaximo
+                                    <div class="progress" style="height: 4px;">
+                                        <div class="progress-bar bg-success" 
+                                             style="width: @((item.CuposDisponibles * 100.0 / item.CupoMaximo))%"></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <small>@item.FechaDisponible.ToString("dd/MM/yyyy")</small>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" 
+                                           class="btn btn-sm btn-outline-warning" title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form asp-action="Delete" asp-route-id="@item.Id" 
+                                              method="post" class="d-inline"
+                                              onsubmit="return confirm('¿Eliminar @item.Nombre?')">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

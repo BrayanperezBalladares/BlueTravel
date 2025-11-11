@@ -1,0 +1,273 @@
+@model BlueTravel.Models.Pago
+
+@{
+    ViewData["Title"] = "Comprobante de Pago";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-@(Model.EstaPagado ? "success" : "warning") text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4>
+                            <i class="bi bi-receipt"></i> Comprobante de Pago
+                        </h4>
+                        <span class="badge bg-light text-dark fs-6">
+                            #@(Model.TransaccionExternaId ?? Model.Id.ToString())
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Estado del Pago -->
+                    <div class="text-center mb-4">
+                        <span class="badge @Model.EstadoBadgeClass fs-5 px-4 py-2">
+                            @if (Model.EstaPagado)
+                            {
+                                <i class="bi bi-check-circle-fill"></i>
+                            }
+                            else if (Model.Estado == EstadoPago.Pendiente)
+                            {
+                                <i class="bi bi-clock"></i>
+                            }
+                            else if (Model.Estado == EstadoPago.Rechazado)
+                            {
+                                <i class="bi bi-x-circle-fill"></i>
+                            }
+                            @Model.Estado
+                        </span>
+                        @if (Model.EsReembolso)
+                        {
+                            <br />
+                            <span class="badge bg-dark mt-2">
+                                <i class="bi bi-arrow-return-left"></i> REEMBOLSO
+                            </span>
+                        }
+                    </div>
+
+                    <!-- Información del Pago -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Información de Pago</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Método:</strong></td>
+                                    <td>
+                                        @switch (Model.Metodo)
+                                        {
+                                            case MetodoPago.TarjetaCredito:
+                                                <i class="bi bi-credit-card"></i> <text>Tarjeta de Crédito</text>
+                                                break;
+                                            case MetodoPago.TarjetaDebito:
+                                                <i class="bi bi-credit-card-2-front"></i> <text>Tarjeta de Débito</text>
+                                                break;
+                                            case MetodoPago.SinpeMovil:
+                                                <i class="bi bi-phone"></i> <text>SINPE Móvil</text>
+                                                break;
+                                            default:
+                                                @Model.Metodo
+                                                break;
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.UltimosDigitosTarjeta))
+                                        {
+                                            <br />
+                                            <small class="text-muted">
+                                                @Model.MarcaTarjeta **** **** **** @Model.UltimosDigitosTarjeta
+                                            </small>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>ID Transacción:</strong></td>
+                                    <td>
+                                        <code>@(Model.TransaccionExternaId ?? "N/A")</code>
+                                        @if (!string.IsNullOrEmpty(Model.TransaccionExternaId) && Model.TransaccionExternaId.StartsWith("pi_"))
+                                        {
+                                            <br />
+                                            <a href="https://dashboard.stripe.com/test/payments/@Model.TransaccionExternaId" 
+                                               target="_blank" class="btn btn-sm btn-outline-primary mt-1">
+                                                <i class="bi bi-stripe"></i> Ver en Stripe
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Fecha Creación:</strong></td>
+                                    <td>@Model.FechaCreacion.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                </tr>
+                                @if (Model.FechaAprobacion.HasValue)
+                                {
+                                    <tr>
+                                        <td><strong>Fecha Aprobación:</strong></td>
+                                        <td>@Model.FechaAprobacion.Value.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                    </tr>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.ReferenciaBancaria))
+                                {
+                                    <tr>
+                                        <td><strong>Referencia:</strong></td>
+                                        <td>@Model.ReferenciaBancaria</td>
+                                    </tr>
+                                }
+                            </table>
+
+                            @* ?? NUEVO: Indicador de Stripe *@
+                            @if (!string.IsNullOrEmpty(Model.TransaccionExternaId))
+                            {
+                                <div class="alert alert-success mt-3">
+                                    <i class="bi bi-shield-check"></i>
+                                    <strong>Pago procesado con Stripe</strong><br />
+                                    <small>
+                                        @if (Model.TransaccionExternaId.StartsWith("pi_sim_"))
+                                        {
+                                            <text>Transacción simulada (Stripe no configurado)</text>
+                                        }
+                                        else
+                                        {
+                                            <text>Transacción real en modo TEST de Stripe</text>
+                                        }
+                                    </small>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Desglose de Montos</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td>Monto Base:</td>
+                                    <td class="text-end">@Model.MontoBase.ToString("C")</td>
+                                </tr>
+                                @if (Model.CargosAdicionales > 0)
+                                {
+                                    <tr>
+                                        <td>Cargos Adicionales:</td>
+                                        <td class="text-end">@Model.CargosAdicionales.ToString("C")</td>
+                                    </tr>
+                                }
+                                @if (Model.Descuentos > 0)
+                                {
+                                    <tr class="text-success">
+                                        <td>Descuentos:</td>
+                                        <td class="text-end">-@Model.Descuentos.ToString("C")</td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td>IVA (13%):</td>
+                                    <td class="text-end">@Model.Impuestos.ToString("C")</td>
+                                </tr>
+                                <tr class="table-primary fw-bold">
+                                    <td>TOTAL:</td>
+                                    <td class="text-end fs-5">@Model.TotalPagado.ToString("C")</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Información de Reserva -->
+                    @if (Model.Reserva != null)
+                    {
+                        <hr />
+                        <h6 class="text-muted">Reserva Asociada</h6>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>ID:</strong> #@Model.Reserva.Id</p>
+                                        <p><strong>Servicio:</strong> @Model.Reserva.ItemNombre</p>
+                                        <p><strong>Tipo:</strong> @Model.Reserva.TipoReserva</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Personas:</strong> @Model.Reserva.DetallePersonas</p>
+                                        <p><strong>Fecha Inicio:</strong> @Model.Reserva.FechaInicio.ToString("dd/MM/yyyy")</p>
+                                        <p><strong>Estado:</strong> 
+                                            <span class="badge @Model.Reserva.EstadoBadgeClass">
+                                                @Model.Reserva.Estado
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <a href="@Url.Action("Details", "Reservas", new { id = Model.ReservaId })" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i> Ver Reserva
+                                </a>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Notas Internas (solo Admin) -->
+                    @if (User.IsInRole("Admin") && !string.IsNullOrEmpty(Model.NotasInternas))
+                    {
+                        <hr />
+                        <div class="alert alert-secondary">
+                            <strong>Notas Internas (Admin):</strong><br />
+                            @Model.NotasInternas
+                        </div>
+                    }
+
+                    <!-- Acciones -->
+                    <div class="d-flex gap-2 mt-4">
+                        <button onclick="window.print()" class="btn btn-primary">
+                            <i class="bi bi-printer"></i> Imprimir
+                        </button>
+                        <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Volver a Pagos
+                        </a>
+                        
+                        @if (User.IsInRole("Admin") && Model.Estado == EstadoPago.Aprobado && !Model.EsReembolso)
+                        {
+                            <button type="button" class="btn btn-danger ms-auto" data-bs-toggle="modal" data-bs-target="#modalReembolso">
+                                <i class="bi bi-arrow-return-left"></i> Procesar Reembolso
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Reembolso (Admin) -->
+@if (User.IsInRole("Admin"))
+{
+    <div class="modal fade" id="modalReembolso" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="Reembolsar" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">Procesar Reembolso</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Atención:</strong> Esta acción creará un pago de reembolso y 
+                            cancelará la reserva asociada.
+                        </div>
+                        <div class="mb-3">
+                            <label for="motivo" class="form-label">Motivo del Reembolso</label>
+                            <textarea name="motivo" id="motivo" class="form-control" rows="3" 
+                                      required placeholder="Indique el motivo del reembolso..."></textarea>
+                        </div>
+                        <p><strong>Monto a Reembolsar:</strong> @Model.TotalPagado.ToString("C")</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-arrow-return-left"></i> Confirmar Reembolso
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@section Styles {
+    <style>
+        @@media print {
+            .btn, .modal, nav, footer { display: none !important; }
+            .card { border: none; box-shadow: none; }
+        }
+    </style>
+}

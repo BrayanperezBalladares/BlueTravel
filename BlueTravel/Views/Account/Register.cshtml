@@ -1,0 +1,340 @@
+﻿@model BlueTravel.Models.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Crear Cuenta";
+    var returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+    var showMessage = !string.IsNullOrEmpty(returnUrl);
+}
+
+<!-- Register Page Premium -->
+<section class="register-page min-vh-100 d-flex align-items-center py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="register-card card border-0 shadow-2xl overflow-hidden">
+                    <div class="row g-0">
+                        <!-- Left Side: Image/Branding -->
+                        <div class="col-lg-6 d-none d-lg-block">
+                            <div class="register-image-side h-100 position-relative">
+                                <img src="https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=800&h=1000&fit=crop" 
+                                     alt="BlueTravel" class="w-100 h-100 object-cover">
+                                <div class="register-overlay"></div>
+                                <div class="register-brand-content position-absolute top-50 start-50 translate-middle text-center">
+                                    <div class="logo-circle-large mb-4">
+                                        <i class="bi bi-star-fill"></i>
+                                    </div>
+                                    <h2 class="text-white fw-bold mb-3">Únete a BlueTravel</h2>
+                                    <p class="text-white-50 lead">Miles de experiencias te esperan</p>
+                                    <div class="mt-4">
+                                        <div class="d-flex justify-content-center gap-4 text-white small">
+                                            <div>
+                                                <i class="bi bi-check-circle-fill me-2"></i>Registro gratis
+                                            </div>
+                                            <div>
+                                                <i class="bi bi-check-circle-fill me-2"></i>Sin cargos
+                                            </div>
+                                            <div>
+                                                <i class="bi bi-check-circle-fill me-2"></i>Seguro
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Side: Register Form -->
+                        <div class="col-lg-6">
+                            <div class="register-form-side p-5">
+                                <!-- Context Message -->
+                                @if (showMessage)
+                                {
+                                    <div class="alert alert-success border-0 shadow-sm mb-4" data-aos="fade-down">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <i class="bi bi-gift-fill fs-3"></i>
+                                            <div>
+                                                <strong>¡Crea tu cuenta y reserva!</strong>
+                                                <p class="mb-0 small">Es rápido, gratis y seguro</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                                <!-- Header -->
+                                <div class="text-center mb-4" data-aos="fade-down">
+                                    <h1 class="fw-bold mb-2">Crear Cuenta</h1>
+                                    <p class="text-muted">Comienza tu viaje con nosotros</p>
+                                </div>
+
+                                <!-- Error Messages -->
+                                <div asp-validation-summary="All" class="alert alert-danger border-0 shadow-sm mb-4" style="display:none;"></div>
+
+                                <!-- Social Register Buttons -->
+                                <div class="social-register mb-4" data-aos="fade-up" data-aos-delay="100">
+                                    <form asp-controller="Account" asp-action="ExternalLogin" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="provider" value="Google" />
+                                        <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+                                        <button type="submit" class="btn btn-google w-100 py-3 rounded-pill shadow-sm mb-3">
+                                            <i class="bi bi-google me-2"></i>
+                                            Registrarse con Google
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <!-- Divider -->
+                                <div class="divider my-4" data-aos="fade-up" data-aos-delay="150">
+                                    <span>o regístrate con email</span>
+                                </div>
+
+                                <!-- Register Form -->
+                                <form asp-action="Register" method="post" data-aos="fade-up" data-aos-delay="200">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="ReturnUrl" value="@returnUrl" />
+                                    
+                                    <div class="mb-3">
+                                        <label asp-for="Email" class="form-label fw-semibold">
+                                            <i class="bi bi-envelope me-2"></i>Correo Electrónico
+                                        </label>
+                                        <input asp-for="Email" 
+                                               class="form-control form-control-lg rounded-pill" 
+                                               placeholder="ejemplo@correo.com" 
+                                               autocomplete="username" />
+                                        <span asp-validation-for="Email" class="text-danger small"></span>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="Password" class="form-label fw-semibold">
+                                            <i class="bi bi-lock me-2"></i>Contraseña
+                                        </label>
+                                        <div class="input-group">
+                                            <input asp-for="Password" 
+                                                   class="form-control form-control-lg rounded-pill" 
+                                                   placeholder="••••••••" 
+                                                   type="password"
+                                                   id="passwordInput"
+                                                   autocomplete="new-password" />
+                                            <button class="btn btn-link position-absolute end-0 top-50 translate-middle-y z-3" 
+                                                    type="button" 
+                                                    onclick="togglePassword('passwordInput', 'toggleIcon1')"
+                                                    style="border: none;">
+                                                <i class="bi bi-eye" id="toggleIcon1"></i>
+                                            </button>
+                                        </div>
+                                        <span asp-validation-for="Password" class="text-danger small"></span>
+                                        <small class="text-muted d-block mt-1">
+                                            Mínimo 6 caracteres con mayúscula, número y carácter especial
+                                        </small>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label asp-for="ConfirmPassword" class="form-label fw-semibold">
+                                            <i class="bi bi-shield-check me-2"></i>Confirmar Contraseña
+                                        </label>
+                                        <div class="input-group">
+                                            <input asp-for="ConfirmPassword" 
+                                                   class="form-control form-control-lg rounded-pill" 
+                                                   placeholder="••••••••" 
+                                                   type="password"
+                                                   id="confirmPasswordInput"
+                                                   autocomplete="new-password" />
+                                            <button class="btn btn-link position-absolute end-0 top-50 translate-middle-y z-3" 
+                                                    type="button" 
+                                                    onclick="togglePassword('confirmPasswordInput', 'toggleIcon2')"
+                                                    style="border: none;">
+                                                <i class="bi bi-eye" id="toggleIcon2"></i>
+                                            </button>
+                                        </div>
+                                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                                    </div>
+
+                                    <div class="d-grid mb-3">
+                                        <button type="submit" class="btn btn-success btn-lg rounded-pill py-3 fw-bold">
+                                            <i class="bi bi-person-plus me-2"></i>Crear Cuenta Gratis
+                                        </button>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <small class="text-muted">
+                                            Al registrarte, aceptas nuestros 
+                                            <a href="#" class="text-primary">Términos de Servicio</a> y 
+                                            <a href="#" class="text-primary">Política de Privacidad</a>
+                                        </small>
+                                    </div>
+                                </form>
+
+                                <!-- Login Link -->
+                                <div class="text-center mt-4" data-aos="fade-up" data-aos-delay="250">
+                                    <p class="text-muted mb-3">
+                                        ¿Ya tienes cuenta? 
+                                        <a asp-action="Login" asp-route-returnUrl="@returnUrl" class="text-primary fw-semibold text-decoration-none">
+                                            Inicia sesión
+                                        </a>
+                                    </p>
+                                </div>
+
+                                <!-- Benefits -->
+                                <div class="benefits mt-4 p-3 bg-light rounded-3" data-aos="fade-up" data-aos-delay="300">
+                                    <small class="text-muted d-block mb-2 fw-semibold">
+                                        <i class="bi bi-star-fill text-warning me-1"></i>Beneficios de registrarte:
+                                    </small>
+                                    <ul class="small text-muted mb-0 ps-3">
+                                        <li>Acceso a ofertas exclusivas</li>
+                                        <li>Gestiona tus reservas fácilmente</li>
+                                        <li>Guarda tus destinos favoritos</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <style>
+        .register-page {
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+        }
+
+        .register-card {
+            border-radius: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .register-image-side {
+            background: linear-gradient(135deg, #00bfa5 0%, #00897b 100%);
+        }
+
+        .object-cover {
+            object-fit: cover;
+        }
+
+        .register-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 191, 165, 0.9) 0%, rgba(0, 137, 123, 0.9) 100%);
+        }
+
+        .logo-circle-large {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            margin: 0 auto;
+            backdrop-filter: blur(10px);
+        }
+
+        .register-form-side {
+            background: white;
+        }
+
+        /* Social Buttons */
+        .btn-google {
+            background: white;
+            border: 2px solid #e0e0e0;
+            color: #333;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-google:hover {
+            background: #4285f4;
+            color: white;
+            border-color: #4285f4;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(66, 133, 244, 0.3);
+        }
+
+        /* Divider */
+        .divider {
+            position: relative;
+            text-align: center;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider span {
+            position: relative;
+            background: white;
+            padding: 0 1rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        /* Form Controls */
+        .form-control-lg {
+            padding: 0.75rem 1.5rem;
+        }
+
+        .form-control:focus {
+            border-color: #00bfa5;
+            box-shadow: 0 0 0 0.2rem rgba(0, 191, 165, 0.15);
+        }
+
+        /* Password Toggle */
+        .input-group {
+            position: relative;
+        }
+
+        #toggleIcon1, #toggleIcon2 {
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @@media (max-width: 991px) {
+            .register-form-side {
+                padding: 2rem !important;
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 600, once: true });
+
+        // Toggle Password Visibility
+        function togglePassword(inputId, iconId) {
+            const passwordInput = document.getElementById(inputId);
+            const toggleIcon = document.getElementById(iconId);
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            }
+        }
+
+        // Show validation summary if there are errors
+        const validationSummary = document.querySelector('[asp-validation-summary]');
+        if (validationSummary && validationSummary.querySelectorAll('li').length > 0) {
+            validationSummary.style.display = 'block';
+        }
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

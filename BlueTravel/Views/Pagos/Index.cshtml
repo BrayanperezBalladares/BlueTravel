@@ -1,0 +1,156 @@
+@model IEnumerable<BlueTravel.Models.Pago>
+
+@{
+    ViewData["Title"] = "Mis Pagos";
+}
+
+<div class="container my-5">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2><i class="bi bi-credit-card"></i> Mis Pagos</h2>
+            <p class="text-muted">Historial de pagos y transacciones</p>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> No tienes pagos registrados aún.
+            <a href="@Url.Action("Index", "Reservas")" class="alert-link">Ver mis reservas</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID Transacción</th>
+                        <th>Reserva</th>
+                        <th>Método</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var pago in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@(pago.TransaccionExternaId ?? $"#{pago.Id}")</strong>
+                                @if (pago.EsReembolso)
+                                {
+                                    <span class="badge bg-dark ms-1">
+                                        <i class="bi bi-arrow-return-left"></i> Reembolso
+                                    </span>
+                                }
+                            </td>
+                            <td>
+                                @if (pago.Reserva != null)
+                                {
+                                    <div>
+                                        <small class="text-muted">Reserva #@pago.ReservaId</small><br />
+                                        <strong>@pago.Reserva.ItemNombre</strong>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Reserva #@pago.ReservaId</span>
+                                }
+                            </td>
+                            <td>
+                                @switch (pago.Metodo)
+                                {
+                                    case MetodoPago.TarjetaCredito:
+                                        <i class="bi bi-credit-card"></i> <text>Tarjeta Crédito</text>
+                                        break;
+                                    case MetodoPago.TarjetaDebito:
+                                        <i class="bi bi-credit-card-2-front"></i> <text>Tarjeta Débito</text>
+                                        break;
+                                    case MetodoPago.SinpeMovil:
+                                        <i class="bi bi-phone"></i> <text>SINPE Móvil</text>
+                                        break;
+                                    case MetodoPago.PayPal:
+                                        <i class="bi bi-paypal"></i> <text>PayPal</text>
+                                        break;
+                                    default:
+                                        @pago.Metodo
+                                        break;
+                                }
+                                @if (!string.IsNullOrEmpty(pago.UltimosDigitosTarjeta))
+                                {
+                                    <br /><small class="text-muted">**** @pago.UltimosDigitosTarjeta</small>
+                                }
+                            </td>
+                            <td>
+                                <strong class="@(pago.TotalPagado < 0 ? "text-danger" : "")">
+                                    @pago.TotalPagado.ToString("C")
+                                </strong>
+                                @if (pago.Impuestos > 0)
+                                {
+                                    <br /><small class="text-muted">(IVA: @pago.Impuestos.ToString("C"))</small>
+                                }
+                            </td>
+                            <td>
+                                <span class="badge @pago.EstadoBadgeClass">
+                                    @pago.Estado
+                                </span>
+                            </td>
+                            <td>
+                                @pago.FechaCreacion.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Details", new { id = pago.Id })" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i> Ver
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">Total Pagado</h6>
+                        <h3 class="card-title text-success">
+                            @Model.Where(p => p.Estado == EstadoPago.Aprobado && !p.EsReembolso).Sum(p => p.TotalPagado).ToString("C")
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">Pagos Pendientes</h6>
+                        <h3 class="card-title text-warning">
+                            @Model.Count(p => p.Estado == EstadoPago.Pendiente)
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">Reembolsos</h6>
+                        <h3 class="card-title text-info">
+                            @Model.Count(p => p.EsReembolso)
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

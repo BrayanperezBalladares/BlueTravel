@@ -1,0 +1,112 @@
+@model IEnumerable<BlueTravel.Models.Restaurante>
+
+@{
+    ViewData["Title"] = "Gestión de Restaurantes";
+}
+
+<div class="container-fluid my-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-5 fw-bold">
+                <i class="bi bi-cup-hot text-warning me-2"></i>
+                Gestión de Restaurantes
+            </h1>
+            <p class="text-muted mb-0">Administra todos los restaurantes del sistema</p>
+        </div>
+        <a asp-action="Create" class="btn btn-warning btn-lg rounded-pill px-4 text-dark">
+            <i class="bi bi-plus-circle me-2"></i>Nuevo Restaurante
+        </a>
+    </div>
+
+    <!-- Estadísticas rápidas -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">Total Restaurantes</h5>
+                    <h2 class="fw-bold text-warning">@Model.Count()</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">Precio Promedio</h5>
+                    <h2 class="fw-bold text-success">@Model.Average(r => r.PrecioPromedio).ToString("C")</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">Tipos de Cocina</h5>
+                    <h2 class="fw-bold text-info">@Model.Select(r => r.TipoComida).Distinct().Count()</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Tipo de Cocina</th>
+                            <th>Ubicación</th>
+                            <th>Especialidad</th>
+                            <th>Precio Promedio</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><strong>#@item.Id</strong></td>
+                                <td>
+                                    <strong>@item.Nombre</strong>
+                                </td>
+                                <td>
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="bi bi-utensils"></i> @item.TipoComida
+                                    </span>
+                                </td>
+                                <td>
+                                    <i class="bi bi-geo-alt text-danger"></i>
+                                    @item.Ubicacion
+                                </td>
+                                <td>
+                                    <small class="text-muted fst-italic">
+                                        @(item.Especialidad?.Length > 50 ? item.Especialidad.Substring(0, 50) + "..." : item.Especialidad)
+                                    </small>
+                                </td>
+                                <td class="fw-bold text-success">@item.PrecioPromedio.ToString("C")</td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" 
+                                           class="btn btn-sm btn-outline-warning" title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form asp-action="Delete" asp-route-id="@item.Id" 
+                                              method="post" class="d-inline"
+                                              onsubmit="return confirm('¿Eliminar @item.Nombre?')">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

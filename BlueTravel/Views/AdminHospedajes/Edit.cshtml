@@ -1,0 +1,134 @@
+@model BlueTravel.Models.Hospedaje
+
+@{
+    ViewData["Title"] = $"Editar: {Model.Nombre}";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0">
+                        <i class="bi bi-pencil-square me-2"></i>
+                        Editar Hospedaje: @Model.Nombre
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Nombre" class="form-label fw-bold"></label>
+                            <input asp-for="Nombre" class="form-control form-control-lg" />
+                            <span asp-validation-for="Nombre" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Ubicacion" class="form-label fw-bold"></label>
+                                <input asp-for="Ubicacion" class="form-control" />
+                                <span asp-validation-for="Ubicacion" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="TipoHospedaje" class="form-label fw-bold"></label>
+                                <select asp-for="TipoHospedaje" class="form-select">
+                                    <option value="">Seleccione...</option>
+                                    <option value="Hotel">Hotel</option>
+                                    <option value="Resort">Resort</option>
+                                    <option value="Cabaña">Cabaña</option>
+                                    <option value="Villa">Villa</option>
+                                    <option value="Apartamento">Apartamento</option>
+                                </select>
+                                <span asp-validation-for="TipoHospedaje" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Descripcion" class="form-label fw-bold"></label>
+                            <textarea asp-for="Descripcion" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Descripcion" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="PrecioPorNoche" class="form-label fw-bold"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">?</span>
+                                    <input asp-for="PrecioPorNoche" class="form-control" type="number" step="0.01" />
+                                </div>
+                                <span asp-validation-for="PrecioPorNoche" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="CapacidadMaxima" class="form-label fw-bold"></label>
+                                <input asp-for="CapacidadMaxima" class="form-control" type="number" />
+                                <span asp-validation-for="CapacidadMaxima" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="PersonasIncluidasEnPrecio" class="form-label fw-bold"></label>
+                                <input asp-for="PersonasIncluidasEnPrecio" class="form-control" type="number" />
+                                <span asp-validation-for="PersonasIncluidasEnPrecio" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CargoPorPersonaExtra" class="form-label fw-bold"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">?</span>
+                                    <input asp-for="CargoPorPersonaExtra" class="form-control" type="number" step="0.01" />
+                                </div>
+                                <span asp-validation-for="CargoPorPersonaExtra" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label asp-for="HoraCheckIn" class="form-label fw-bold"></label>
+                                <input asp-for="HoraCheckIn" class="form-control" type="number" min="0" max="23" />
+                                <span asp-validation-for="HoraCheckIn" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label asp-for="HoraCheckOut" class="form-label fw-bold"></label>
+                                <input asp-for="HoraCheckOut" class="form-control" type="number" min="0" max="23" />
+                                <span asp-validation-for="HoraCheckOut" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ImagenUrl" class="form-label fw-bold"></label>
+                            <input asp-for="ImagenUrl" class="form-control" placeholder="https://..." />
+                            <span asp-validation-for="ImagenUrl" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check form-switch">
+                                    <input asp-for="PermiteNinos" class="form-check-input" />
+                                    <label asp-for="PermiteNinos" class="form-check-label"></label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check form-switch">
+                                    <input asp-for="PermiteMascotas" class="form-check-input" />
+                                    <label asp-for="PermiteMascotas" class="form-check-label"></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-warning btn-lg px-5 text-dark">
+                                <i class="bi bi-save me-2"></i>Guardar Cambios
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg px-4">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

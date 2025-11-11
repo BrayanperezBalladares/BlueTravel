@@ -1,0 +1,436 @@
+﻿@model PaginatedList<BlueTravel.Models.Oferta>
+
+@{
+    ViewData["Title"] = "Ofertas Especiales";
+}
+
+<!-- Hero de Ofertas con Countdown -->
+<section class="ofertas-hero position-relative text-white overflow-hidden py-5">
+    <div class="hero-pattern"></div>
+    <div class="container position-relative z-2">
+        <div class="row align-items-center py-5">
+            <div class="col-lg-6" data-aos="fade-right">
+                <span class="badge bg-danger px-4 py-2 mb-3 rounded-pill fs-6">
+                    <i class="bi bi-lightning-fill me-2"></i>¡OFERTAS POR TIEMPO LIMITADO!
+                </span>
+                <h1 class="display-2 fw-bold mb-4">
+                    Ahorra hasta
+                    <span class="d-block text-warning">50% OFF</span>
+                </h1>
+                <p class="lead fs-4 mb-4">
+                    Las mejores experiencias de Guanacaste ahora con descuentos increíbles.
+                    ¡No dejes pasar esta oportunidad!
+                </p>
+                <div class="d-flex gap-3 mb-4">
+                    <a href="#ofertas-grid" class="btn btn-warning btn-lg rounded-pill px-5 text-dark fw-bold">
+                        <i class="bi bi-gift me-2"></i>Ver Ofertas
+                    </a>
+                </div>
+
+                <!-- Countdown Timer -->
+                <div class="countdown-timer bg-black bg-opacity-50 rounded-4 p-4 d-inline-block">
+                    <div class="row g-3 text-center">
+                        <div class="col">
+                            <div class="countdown-item">
+                                <div class="countdown-number display-5 fw-bold" id="days">00</div>
+                                <small>Días</small>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="countdown-item">
+                                <div class="countdown-number display-5 fw-bold" id="hours">00</div>
+                                <small>Horas</small>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="countdown-item">
+                                <div class="countdown-number display-5 fw-bold" id="minutes">00</div>
+                                <small>Minutos</small>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="countdown-item">
+                                <div class="countdown-number display-5 fw-bold" id="seconds">00</div>
+                                <small>Segundos</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block" data-aos="fade-left">
+                <div class="floating-card-ofertas">
+                    <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&h=500&fit=crop" 
+                         alt="Ofertas" class="img-fluid rounded-4 shadow-2xl">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Grid de Ofertas -->
+<section class="ofertas-grid py-5" id="ofertas-grid">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="display-4 fw-bold mb-3">Ofertas Destacadas</h2>
+            <p class="lead text-muted">Aprovecha estos descuentos exclusivos antes de que terminen</p>
+        </div>
+
+        @if (!Model.Items.Any())
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-percent text-muted" style="font-size: 5rem;"></i>
+                <h3 class="mt-4">No hay ofertas disponibles</h3>
+                <p class="text-muted">Vuelve pronto para ver nuevas promociones</p>
+            </div>
+        }
+        else
+        {
+            <div class="row g-4">
+                @foreach (var oferta in Model.Items)
+                {
+                    var diasRestantes = (oferta.FechaFin - DateTime.Now).Days;
+                    var urgencia = diasRestantes <= 3 ? "danger" : diasRestantes <= 7 ? "warning" : "success";
+                    
+                    <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="@(Model.Items.ToList().IndexOf(oferta) * 100)">
+                        <div class="card oferta-card h-100 border-0 shadow-lg position-relative overflow-hidden">
+                            <!-- Badge de descuento -->
+                            <div class="discount-badge position-absolute top-0 end-0 m-3 z-3">
+                                <div class="badge-circle bg-danger text-white shadow-lg">
+                                    <div class="badge-inner">
+                                        <div class="display-6 fw-bold">-50%</div>
+                                        <small>OFF</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Badge de urgencia -->
+                            @if (diasRestantes <= 7)
+                            {
+                                <div class="position-absolute top-0 start-0 m-3 z-3">
+                                    <span class="badge bg-@urgencia rounded-pill shadow">
+                                        <i class="bi bi-clock-fill me-1"></i>
+                                        @if (diasRestantes <= 0)
+                                        {
+                                            <text>¡Última oportunidad!</text>
+                                        }
+                                        else
+                                        {
+                                            @diasRestantes <text>días restantes</text>
+                                        }
+                                    </span>
+                                </div>
+                            }
+
+                            <!-- Imagen de fondo -->
+                            <div class="oferta-img-wrapper">
+                                <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=500&h=350&fit=crop" 
+                                     class="card-img-top oferta-img" 
+                                     alt="@oferta.Titulo">
+                                <div class="oferta-overlay"></div>
+                            </div>
+
+                            <div class="card-body p-4">
+                                <!-- Título -->
+                                <h4 class="card-title fw-bold mb-3">@oferta.Titulo</h4>
+
+                                <!-- Descripción -->
+                                <p class="card-text text-muted mb-3">
+                                    @(oferta.Descripcion?.Length > 100 ? oferta.Descripcion.Substring(0, 100) + "..." : oferta.Descripcion)
+                                </p>
+
+                                <!-- Fechas -->
+                                <div class="d-flex align-items-center gap-2 mb-3">
+                                    <i class="bi bi-calendar-range text-primary"></i>
+                                    <small class="text-muted">
+                                        @oferta.FechaInicio.ToString("dd/MM/yyyy") - @oferta.FechaFin.ToString("dd/MM/yyyy")
+                                    </small>
+                                </div>
+
+                                <hr />
+
+                                <!-- Precio -->
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <small class="text-muted text-decoration-line-through d-block">
+                                            Antes: @((oferta.Precio * 2).ToString("C"))
+                                        </small>
+                                        <h3 class="mb-0 fw-bold text-success">
+                                            @oferta.Precio.ToString("C")
+                                        </h3>
+                                    </div>
+                                    <div class="text-end">
+                                        <small class="text-success fw-bold d-block">
+                                            ¡Ahorra @((oferta.Precio).ToString("C"))!
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <!-- CTA -->
+                                <a href="@Url.Action("Details", "Catalogo", new { tipo = "oferta", id = oferta.Id })" 
+                                   class="btn btn-primary w-100 rounded-pill py-3 fw-bold">
+                                    <i class="bi bi-cart-plus me-2"></i>Reservar Ahora
+                                </a>
+                            </div>
+
+                            <!-- Barra de progreso de tiempo -->
+                            @{
+                                var totalDias = (oferta.FechaFin - oferta.FechaInicio).Days;
+                                var diasPasados = (DateTime.Now - oferta.FechaInicio).Days;
+                                var progreso = totalDias > 0 ? (diasPasados * 100.0 / totalDias) : 100;
+                                progreso = Math.Max(0, Math.Min(100, progreso));
+                            }
+                            <div class="progress" style="height: 4px; border-radius: 0;">
+                                <div class="progress-bar bg-@urgencia" 
+                                     style="width: @progreso%"></div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Paginación (sin partial, inline) -->
+            @if (Model.TotalPages > 1)
+            {
+                <nav aria-label="Navegación de página" class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        <!-- Botón Primera Página -->
+                        <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
+                            <a class="page-link" 
+                               href="?pageNumber=1&pageSize=@Model.PageSize" 
+                               aria-label="Primera">
+                                <i class="bi bi-chevron-double-left"></i>
+                            </a>
+                        </li>
+
+                        <!-- Botón Anterior -->
+                        <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                            <a class="page-link" 
+                               href="?pageNumber=@(Model.PageIndex - 1)&pageSize=@Model.PageSize" 
+                               aria-label="Anterior">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+
+                        <!-- Números de Página -->
+                        @foreach (var pageNum in Model.GetPageRange())
+                        {
+                            <li class="page-item @(pageNum == Model.PageIndex ? "active" : "")">
+                                <a class="page-link" href="?pageNumber=@pageNum&pageSize=@Model.PageSize">
+                                    @pageNum
+                                </a>
+                            </li>
+                        }
+
+                        <!-- Botón Siguiente -->
+                        <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                            <a class="page-link" 
+                               href="?pageNumber=@(Model.PageIndex + 1)&pageSize=@Model.PageSize" 
+                               aria-label="Siguiente">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+
+                        <!-- Botón Última Página -->
+                        <li class="page-item @(Model.PageIndex == Model.TotalPages ? "disabled" : "")">
+                            <a class="page-link" 
+                               href="?pageNumber=@Model.TotalPages&pageSize=@Model.PageSize" 
+                               aria-label="Última">
+                                <i class="bi bi-chevron-double-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Información de Paginación -->
+                <div class="text-center text-muted mb-4">
+                    <small>
+                        Mostrando <strong>@Model.FirstItemIndex</strong> - <strong>@Model.LastItemIndex</strong> 
+                        de <strong>@Model.TotalCount</strong> resultados
+                    </small>
+                </div>
+            }
+        }
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0" data-aos="fade-right">
+                <h2 class="display-5 fw-bold mb-3">
+                    <i class="bi bi-bell-fill me-3"></i>
+                    ¡No Te Pierdas Ninguna Oferta!
+                </h2>
+                <p class="lead mb-0">
+                    Suscríbete y recibe las mejores promociones directamente en tu correo
+                </p>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <form class="row g-2">
+                    <div class="col-md-8">
+                        <input type="email" class="form-control form-control-lg" 
+                               placeholder="tu@email.com" required>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-warning btn-lg w-100 text-dark fw-bold">
+                            Suscribirse
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <style>
+        .ofertas-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            min-height: 600px;
+        }
+
+        .hero-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .countdown-timer {
+            backdrop-filter: blur(10px);
+        }
+
+        .countdown-number {
+            line-height: 1;
+        }
+
+        .floating-card-ofertas {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @@keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .oferta-card {
+            transition: all 0.3s ease;
+            border-radius: 1rem !important;
+        }
+
+        .oferta-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        .oferta-img-wrapper {
+            position: relative;
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .oferta-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .oferta-card:hover .oferta-img {
+            transform: scale(1.15);
+        }
+
+        .oferta-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 100%);
+        }
+
+        .discount-badge {
+            animation: pulse 2s infinite;
+        }
+
+        .badge-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.5);
+        }
+
+        .badge-inner {
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        @@keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+        }
+
+        .pagination .page-link {
+            color: #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #f8f9fa;
+            color: #764ba2;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #6c757d;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true });
+
+        // Countdown Timer
+        function updateCountdown() {
+            const endDate = new Date();
+            endDate.setDate(endDate.getDate() + 7); // 7 días desde ahora
+            
+            const now = new Date().getTime();
+            const distance = endDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = String(days).padStart(2, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                document.querySelector('.countdown-timer').innerHTML = '<h4>¡Oferta Finalizada!</h4>';
+            }
+        }
+
+        const countdownInterval = setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+}
