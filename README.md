@@ -1,4 +1,4 @@
-# ?? BlueTravel - Sistema de Reservas TurÌsticas
+# BlueTravel - Sistema de Reservas Tur√≠sticas
 
 ![.NET](https://img.shields.io/badge/.NET-9.0-blue)
 ![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-Razor%20Pages-green)
@@ -6,124 +6,124 @@
 ![Stripe](https://img.shields.io/badge/Stripe-Payments-blue)
 ![License](https://img.shields.io/badge/License-Academic-green)
 
-Sistema profesional de gestiÛn de reservas turÌsticas para la regiÛn de Guanacaste, Costa Rica. Desarrollado con ASP.NET Core 9.0, Razor Pages y arquitectura moderna.
+Sistema profesional de gesti√≥n de reservas tur√≠sticas para la regi√≥n de Guanacaste, Costa Rica. Desarrollado con ASP.NET Core 9.0, Razor Pages y arquitectura moderna.
 
 ---
 
-## ?? DescripciÛn
+##  Descripci√≥n
 
-BlueTravel es una plataforma web completa para la gestiÛn de reservas turÌsticas en Costa Rica. Permite a los usuarios explorar, reservar y pagar por tours y hospedajes de forma segura, mientras que los administradores pueden gestionar todo el inventario y procesar pagos con Stripe.
+BlueTravel es una plataforma web completa para la gesti√≥n de reservas tur√≠sticas en Costa Rica. Permite a los usuarios explorar, reservar y pagar por tours y hospedajes de forma segura, mientras que los administradores pueden gestionar todo el inventario y procesar pagos con Stripe.
 
-**? Proyecto AcadÈmico - Universidad [Tu Universidad] 2025**
-
----
-
-## ?? CaracterÌsticas Principales
-
-### ?? GestiÛn de Hospedajes
-- ? CRUD completo de hoteles, resorts, cabaÒas y villas
-- ? Sistema de disponibilidad en tiempo real
-- ? C·lculo din·mico de precios por noche
-- ? Cargos por personas extra
-- ? Restricciones de capacidad y validaciones
-- ? ConfiguraciÛn de horarios check-in/check-out
-- ? Filtros de b˙squeda avanzados
-
-### ?? Tours y Excursiones
-- ? Cat·logo completo de tours con im·genes
-- ? GestiÛn de cupos y reservas simult·neas
-- ? Precios diferenciados (adultos/niÒos/seniors)
-- ? Descuentos por grupos
-- ? Niveles de dificultad y restricciones de edad
-- ? Sistema de confirmaciÛn manual para tours especiales
-- ? ValidaciÛn autom·tica de disponibilidad
-
-### ?? Sistema de Reservas Inteligente
-- ? CreaciÛn de reservas con validaciÛn en tiempo real
-- ? Estados de reserva: Pendiente, Confirmada, Cancelada, Completada, Rechazada
-- ? ValidaciÛn de disponibilidad de cupos
-- ? C·lculo autom·tico de precios con descuentos
-- ? Historial completo para clientes y administradores
-- ? CancelaciÛn con liberaciÛn autom·tica de cupos
-- ? Panel "Mis Reservas" para clientes
-
-### ?? Procesamiento de Pagos con Stripe
-- ? **IntegraciÛn completa con Stripe** (modo TEST gratuito)
-- ? M˙ltiples mÈtodos: Tarjeta de CrÈdito, SINPE MÛvil, PayPal
-- ? Comprobantes digitales descargables en PDF
-- ? Sistema de reembolsos para administradores
-- ? Trazabilidad completa de transacciones
-- ? Dashboard de pagos con estadÌsticas
-- ? Enmascaramiento de datos sensibles (˙ltimos 4 dÌgitos)
-- ? ValidaciÛn de propiedad de pagos
-
-### ?? GestiÛn de Usuarios y Seguridad
-- ? AutenticaciÛn con ASP.NET Core Identity
-- ? Login con Google OAuth 2.0
-- ? Sistema de roles (Admin/Cliente)
-- ? Registro y login seguros
-- ? GestiÛn de permisos granular
-- ? ProtecciÛn CSRF con AntiForgeryToken
-- ? HTTPS forzado en producciÛn
-
-### ?? Panel Administrativo Completo
-- ? Dashboard con estadÌsticas en tiempo real
-- ? Gr·ficos de ingresos mensuales (Chart.js)
-- ? GestiÛn de hospedajes, tours, ofertas
-- ? Panel de reservas con filtros
-- ? Panel de pagos integrado con Stripe
-- ? Reportes de ocupaciÛn y ventas
-- ? Sistema de notificaciones
-
-### ?? UX/UI Moderna y Responsive
-- ? DiseÒo responsive con Bootstrap 5
-- ? Animaciones suaves con AOS
-- ? Gradientes y efectos modernos
-- ? Optimizado para mÛviles y tablets
-- ? Accesibilidad WCAG 2.1
-- ? Fuente Poppins de Google Fonts
-
-### ?? Otras CaracterÌsticas
-- ? Cat·logo de restaurantes recomendados
-- ? Sistema de ofertas especiales con validez temporal
-- ? Opciones de transporte
-- ? Sistema de cachÈ para optimizar rendimiento
-- ? PaginaciÛn de resultados
-- ? Seed Data autom·tico con datos de ejemplo
+** Proyecto Acad√©mico - Universidad [Universidad Nacional] 2025**
 
 ---
 
-## ??? TecnologÌas Utilizadas
+##  Caracter√≠sticas Principales
+
+###  Gesti√≥n de Hospedajes
+-  CRUD completo de hoteles, resorts, caba√±as y villas
+-  Sistema de disponibilidad en tiempo real
+-  C√°lculo din√°mico de precios por noche
+-  Cargos por personas extra
+-  Restricciones de capacidad y validaciones
+-  Configuraci√≥n de horarios check-in/check-out
+-  Filtros de b√∫squeda avanzados
+
+###  Tours y Excursiones
+-  Cat√°logo completo de tours con im√°genes
+-  Gesti√≥n de cupos y reservas simult√°neas
+-  Precios diferenciados (adultos/ni√±os/seniors)
+-  Descuentos por grupos
+-  Niveles de dificultad y restricciones de edad
+-  Sistema de confirmaci√≥n manual para tours especiales
+-  Validaci√≥n autom√°tica de disponibilidad
+
+###  Sistema de Reservas Inteligente
+-  Creaci√≥n de reservas con validaci√≥n en tiempo real
+-  Estados de reserva: Pendiente, Confirmada, Cancelada, Completada, Rechazada
+-  Validaci√≥n de disponibilidad de cupos
+-  C√°lculo autom√°tico de precios con descuentos
+-  Historial completo para clientes y administradores
+-  Cancelaci√≥n con liberaci√≥n autom√°tica de cupos
+-  Panel "Mis Reservas" para clientes
+
+###  Procesamiento de Pagos con Stripe
+-  **Integraci√≥n completa con Stripe** (modo TEST gratuito)
+-  M√∫ltiples m√©todos: Tarjeta de Cr√©dito, SINPE M√≥vil, PayPal
+-  Comprobantes digitales descargables en PDF
+-  Sistema de reembolsos para administradores
+-  Trazabilidad completa de transacciones
+-  Dashboard de pagos con estad√≠sticas
+-  Enmascaramiento de datos sensibles (√∫ltimos 4 d√≠gitos)
+-  Validaci√≥n de propiedad de pagos
+
+### ?? Gesti√≥n de Usuarios y Seguridad
+-  Autenticaci√≥n con ASP.NET Core Identity
+-  Login con Google OAuth 2.0
+-  Sistema de roles (Admin/Cliente)
+-  Registro y login seguros
+-  Gesti√≥n de permisos granular
+-  Protecci√≥n CSRF con AntiForgeryToken
+-  HTTPS forzado en producci√≥n
+
+###  Panel Administrativo Completo
+-  Dashboard con estad√≠sticas en tiempo real
+-  Gr√°ficos de ingresos mensuales (Chart.js)
+-  Gesti√≥n de hospedajes, tours, ofertas
+-  Panel de reservas con filtros
+-  Panel de pagos integrado con Stripe
+-  Reportes de ocupaci√≥n y ventas
+-  Sistema de notificaciones
+
+###  UX/UI Moderna y Responsive
+-  Dise√±o responsive con Bootstrap 5
+-  Animaciones suaves con AOS
+-  Gradientes y efectos modernos
+-  Optimizado para m√≥viles y tablets
+-  Accesibilidad WCAG 2.1
+-  Fuente Poppins de Google Fonts
+
+###  Otras Caracter√≠sticas
+-  Cat√°logo de restaurantes recomendados
+-  Sistema de ofertas especiales con validez temporal
+-  Opciones de transporte
+-  Sistema de cach√© para optimizar rendimiento
+-  Paginaci√≥n de resultados
+-  Seed Data autom√°tico con datos de ejemplo
+
+---
+
+##  Tecnolog√≠as Utilizadas
 
 ### Backend
 - **Framework**: ASP.NET Core 9.0 (Razor Pages + MVC)
 - **Lenguaje**: C# 13.0
 - **ORM**: Entity Framework Core 9.0
 - **Base de Datos**: SQL Server (LocalDB/Azure SQL)
-- **AutenticaciÛn**: ASP.NET Core Identity
+- **Autenticaci√≥n**: ASP.NET Core Identity
 - **Logging**: ILogger integrado
 
 ### Integraciones Externas
 - **Pagos**: Stripe.NET v49.0.0
 - **OAuth**: Google Authentication
-- **Im·genes**: Unsplash API
+- **Im√°genes**: Unsplash API
 
 ### Frontend
 - **UI Framework**: Bootstrap 5.3
 - **Iconos**: Bootstrap Icons + FontAwesome 6
 - **Animaciones**: AOS (Animate On Scroll)
 - **Fuentes**: Google Fonts (Poppins)
-- **Gr·ficos**: Chart.js
+- **Gr√°ficos**: Chart.js
 
 ### Arquitectura y Patrones
-- **PatrÛn Repository**: AbstracciÛn de acceso a datos
-- **InyecciÛn de Dependencias**: Microsoft.Extensions.DependencyInjection
+- **Patr√≥n Repository**: Abstracci√≥n de acceso a datos
+- **Inyecci√≥n de Dependencias**: Microsoft.Extensions.DependencyInjection
 - **Servicios de Negocio**: `IPrecioService`, `IStripeService`, `INotificacionService`, `IReporteService`, `ICacheService`, `IDashboardService`
-- **SeparaciÛn de Responsabilidades**: Controllers ? Services ? Repositories ? Data
+- **Separaci√≥n de Responsabilidades**: Controllers  Services  Repositories  Data
 
 ---
 
-## ?? Requisitos del Sistema
+##  Requisitos del Sistema
 
 - **[.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)** (obligatorio)
 - **[SQL Server](https://www.microsoft.com/sql-server)** (LocalDB incluido con Visual Studio)
@@ -133,23 +133,23 @@ BlueTravel es una plataforma web completa para la gestiÛn de reservas turÌsticas
 
 ---
 
-## ?? InstalaciÛn y ConfiguraciÛn
+##  Instalaci√≥n y Configuraci√≥n
 
-### 1?? Clonar el Repositorio
+### 1 Clonar el Repositorio
 
 ```bash
 git clone https://github.com/TU_USUARIO/BlueTravel.git
 cd BlueTravel
 ```
 
-### 2?? Abrir en Visual Studio
+### 2 Abrir en Visual Studio
 
 - Abrir `BlueTravel.sln` en Visual Studio 2022
-- Esperar a que se restauren los paquetes NuGet autom·ticamente
+- Esperar a que se restauren los paquetes NuGet autom√°ticamente
 
-### 3?? Configurar Base de Datos
+### 3 Configurar Base de Datos
 
-La cadena de conexiÛn por defecto usa **LocalDB**:
+La cadena de conexi√≥n por defecto usa **LocalDB**:
 
 ```json
 "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=BlueTravel;Trusted_Connection=True;MultipleActiveResultSets=true"
@@ -157,9 +157,9 @@ La cadena de conexiÛn por defecto usa **LocalDB**:
 
 Si usas otro servidor, edita `appsettings.json`.
 
-### 4?? Configurar User Secrets (Credenciales Seguras)
+### 4 Configurar User Secrets (Credenciales Seguras)
 
-**?? IMPORTANTE:** No subas credenciales a GitHub. Usa User Secrets:
+** IMPORTANTE:** No subas credenciales a GitHub. Usa User Secrets:
 
 Abre la **Package Manager Console** en Visual Studio y ejecuta:
 
@@ -177,18 +177,18 @@ dotnet user-secrets set "Stripe:PublishableKey" "pk_test_TU_CLAVE_PUBLICA"
 dotnet user-secrets set "Authentication:Google:ClientId" "TU_GOOGLE_CLIENT_ID"
 dotnet user-secrets set "Authentication:Google:ClientSecret" "TU_GOOGLE_CLIENT_SECRET"
 
-# Verificar configuraciÛn
+# Verificar configuraci√≥n
 dotnet user-secrets list
 ```
 
-#### ?? Obtener Credenciales de Stripe
+####  Obtener Credenciales de Stripe
 
-1. RegÌstrate en [Stripe](https://stripe.com) (gratis)
+1. Reg√≠strate en [Stripe](https://stripe.com) (gratis)
 2. Activa el modo **Test**
-3. Ve a **Developers ? API keys**
+3. Ve a **Developers  API keys**
 4. Copia las claves de prueba
 
-#### ?? Obtener Credenciales de Google OAuth
+####  Obtener Credenciales de Google OAuth
 
 1. Ve a [Google Cloud Console](https://console.cloud.google.com)
 2. Crea un nuevo proyecto
@@ -199,7 +199,7 @@ dotnet user-secrets list
    https://localhost:5001/signin-google
    ```
 
-### 5?? Aplicar Migraciones y Seed Data
+### 5 Aplicar Migraciones y Seed Data
 
 En la **Package Manager Console**:
 
@@ -213,12 +213,12 @@ O usando la CLI de .NET:
 dotnet ef database update --project BlueTravel
 ```
 
-Esto crear·:
-- ? Todas las tablas necesarias
-- ? Usuarios de prueba (Admin y Cliente)
-- ? Datos de ejemplo (hospedajes, tours, ofertas, restaurantes)
+Esto crear√°:
+-  Todas las tablas necesarias
+-  Usuarios de prueba (Admin y Cliente)
+-  Datos de ejemplo (hospedajes, tours, ofertas, restaurantes)
 
-### 6?? Ejecutar la AplicaciÛn
+### 6 Ejecutar la Aplicaci√≥n
 
 Presiona **F5** en Visual Studio o ejecuta:
 
@@ -226,13 +226,13 @@ Presiona **F5** en Visual Studio o ejecuta:
 dotnet run --project BlueTravel
 ```
 
-?? Navega a: `https://localhost:5001`
+ Navega a: `https://localhost:5001`
 
 ---
 
-## ?? Credenciales de Prueba
+##  Credenciales de Prueba
 
-### ?? Usuario Administrador
+###  Usuario Administrador
 ```
 Email: admin@bluetravel.com
 Password: Admin123!
@@ -240,147 +240,147 @@ Password: Admin123!
 
 **Panel Admin**: `https://localhost:5001/Admin/Dashboard`
 
-### ????? Usuario Cliente
+###  Usuario Cliente
 Puedes registrarte normalmente en: `/Identity/Account/Register`
 
 O usar Google OAuth si lo configuraste.
 
-### ?? Tarjetas de Prueba Stripe
+###  Tarjetas de Prueba Stripe
 
-| N˙mero | Resultado | CVV | Fecha |
+| N√∫mero | Resultado | CVV | Fecha |
 |--------|-----------|-----|-------|
-| `4242 4242 4242 4242` | ? Pago exitoso | 123 | 12/25 |
-| `4000 0000 0000 0002` | ? Pago rechazado | 123 | 12/25 |
-| `4000 0000 0000 9995` | ?? Fondos insuficientes | 123 | 12/25 |
+| `4242 4242 4242 4242` |  Pago exitoso | 123 | 12/25 |
+| `4000 0000 0000 0002` |  Pago rechazado | 123 | 12/25 |
+| `4000 0000 0000 9995` |  Fondos insuficientes | 123 | 12/25 |
 
-**Fecha de expiraciÛn**: Cualquier fecha futura  
-**CVV**: Cualquier 3 dÌgitos  
-**ZIP**: Cualquier cÛdigo postal
+**Fecha de expiraci√≥n**: Cualquier fecha futura  
+**CVV**: Cualquier 3 d√≠gitos  
+**ZIP**: Cualquier c√≥digo postal
 
 ---
 
-## ?? Estructura del Proyecto
+##  Estructura del Proyecto
 
 ```
 BlueTravel/
-??? Controllers/              # Controladores MVC
-?   ??? AdminController.cs    # Dashboard y gestiÛn administrativa
-?   ??? CatalogoController.cs # Cat·logo p˙blico
-?   ??? HospedajesController.cs
-?   ??? ToursController.cs
-?   ??? OfertasController.cs
-?   ??? ReservasController.cs # Sistema de reservas
-?   ??? PagosController.cs    # Procesamiento de pagos
-?   ??? HomeController.cs
-??? Data/                     # Contexto y datos
-?   ??? ApplicationDbContext.cs
-?   ??? SeedData.cs          # Datos de ejemplo
-?   ??? Repositories/        # PatrÛn Repository
-?   ?   ??? IRepository.cs
-?   ?   ??? Repository.cs
-?   ?   ??? HospedajeRepository.cs
-?   ?   ??? TourRepository.cs
-?   ?   ??? ReservaRepository.cs
-?   ?   ??? OfertaRepository.cs
-?   ??? Migrations/          # Migraciones EF Core
-??? Models/                   # Modelos de dominio
-?   ??? Hospedaje.cs
-?   ??? Tour.cs
-?   ??? Reserva.cs
-?   ??? Pago.cs
-?   ??? Oferta.cs
-?   ??? Restaurante.cs
-?   ??? Transporte.cs
-?   ??? Resena.cs
-?   ??? ViewModels/          # ViewModels
-?       ??? ReservaViewModel.cs
-?       ??? DashboardViewModel.cs
-??? Services/                 # LÛgica de negocio
-?   ??? ICacheService.cs
-?   ??? CacheService.cs
-?   ??? IDashboardService.cs
-?   ??? DashboardService.cs
-?   ??? INotificacionService.cs
-?   ??? NotificacionService.cs
-?   ??? IPrecioService.cs
-?   ??? PrecioService.cs
-?   ??? IReporteService.cs
-?   ??? ReporteService.cs
-?   ??? IStripeService.cs
-?   ??? StripeService.cs
-??? Views/                    # Vistas Razor
-?   ??? Admin/               # Panel administrativo
-?   ?   ??? Dashboard.cshtml
-?   ?   ??? Reservas.cshtml
-?   ?   ??? Pagos.cshtml
-?   ??? Catalogo/            # Cat·logo p˙blico
-?   ?   ??? Hospedajes.cshtml
-?   ?   ??? Tours.cshtml
-?   ?   ??? Ofertas.cshtml
-?   ?   ??? HospedajeDetails.cshtml
-?   ?   ??? TourDetails.cshtml
-?   ??? Home/
-?   ?   ??? Index.cshtml     # Landing page
-?   ??? Pagos/
-?   ?   ??? Create.cshtml
-?   ?   ??? Details.cshtml
-?   ?   ??? Success.cshtml
-?   ??? Reservas/
-?   ?   ??? Create.cshtml
-?   ?   ??? CreateHospedaje.cshtml
-?   ?   ??? CreateTour.cshtml
-?   ?   ??? MisReservas.cshtml
-?   ?   ??? Details.cshtml
-?   ??? Hospedajes/          # CRUD Admin
-?   ??? Tours/               # CRUD Admin
-?   ??? Ofertas/             # CRUD Admin
-?   ??? Shared/
-?       ??? _Layout.cshtml
-?       ??? _LoginPartial.cshtml
-?       ??? Error.cshtml
-??? wwwroot/                  # Archivos est·ticos
-?   ??? css/
-?   ?   ??? site.css
-?   ??? js/
-?   ?   ??? site.js
-?   ??? lib/                 # LibrerÌas
-?   ??? Imagenes/
-??? Program.cs                # ConfiguraciÛn de la app
-??? appsettings.json          # ConfiguraciÛn (SIN credenciales)
-??? BlueTravel.csproj
+    Controllers/              # Controladores MVC
+       AdminController.cs    # Dashboard y gesti√≥n administrativa
+       CatalogoController.cs # Cat√°logo p√∫blico
+       HospedajesController.cs
+       ToursController.cs
+       OfertasController.cs
+       ReservasController.cs # Sistema de reservas
+       PagosController.cs    # Procesamiento de pagos
+       HomeController.cs
+    Data/                     # Contexto y datos
+        ApplicationDbContext.cs
+        SeedData.cs          # Datos de ejemplo
+       Repositories/        # Patr√≥n Repository
+       IRepository.cs
+       Repository.cs
+       HospedajeRepository.cs
+       TourRepository.cs
+       ReservaRepository.cs
+       OfertaRepository.cs
+       Migrations/          # Migraciones EF Core
+    Models/                   # Modelos de dominio
+    Hospedaje.cs
+    Tour.cs
+    Reserva.cs
+    Pago.cs
+    Oferta.cs
+    Restaurante.cs
+    Transporte.cs
+    Resena.cs
+    ViewModels/          # ViewModels
+    ReservaViewModel.cs
+          DashboardViewModel.cs
+    Services/                 # L√≥gica de negocio
+       ICacheService.cs
+       CacheService.cs
+       IDashboardService.cs
+       DashboardService.cs
+       INotificacionService.cs
+       NotificacionService.cs
+       IPrecioService.cs
+       PrecioService.cs
+       IReporteService.cs
+       ReporteService.cs
+       IStripeService.cs
+       StripeService.cs
+    Views/                    # Vistas Razor
+    Admin/               # Panel administrativo
+          Dashboard.cshtml
+          Reservas.cshtml
+          Pagos.cshtml
+       Catalogo/            # Cat√°logo p√∫blico
+          Hospedajes.cshtml
+          Tours.cshtml
+          Ofertas.cshtml
+          HospedajeDetails.cshtml
+          TourDetails.cshtml
+       Home/
+          Index.cshtml     # Landing page
+          Pagos/
+          Create.cshtml
+          Details.cshtml
+          Success.cshtml
+          Reservas/
+          Create.cshtml
+          CreateHospedaje.cshtml
+          CreateTour.cshtml
+          MisReservas.cshtml
+          Details.cshtml
+          Hospedajes/          # CRUD Admin
+          Tours/               # CRUD Admin
+          Ofertas/             # CRUD Admin
+          Shared/
+          _Layout.cshtml
+          _LoginPartial.cshtml
+          Error.cshtml
+ wwwroot/                  # Archivos est√°ticos
+    css/
+    site.css
+    js/
+    site.js
+    lib/                 # Librer√≠as
+    Imagenes/
+ Program.cs                # Configuraci√≥n de la app
+ appsettings.json          # Configuraci√≥n (SIN credenciales)
+ BlueTravel.csproj
 ```
 
 ---
 
-## ?? Flujo de Pago Completo
+##  Flujo de Pago Completo
 
 ### Proceso Paso a Paso
 
 ```
-1. ?? Cliente crea RESERVA
-   ?
-2. ?? Reserva guardada con Estado = "Pendiente"
-   ?
-3. ?? Cliente ve botÛn "PAGAR AHORA"
-   ?
-4. ?? Completa formulario de pago (mÈtodo, datos tarjeta)
-   ?
-5. ?? Sistema procesa con Stripe
-   ?
-6. ? Pago exitoso:
+1.  Cliente crea RESERVA
+   
+2.  Reserva guardada con Estado = "Pendiente"
+   
+3.  Cliente ve bot√≥n "PAGAR AHORA"
+   
+4.  Completa formulario de pago (m√©todo, datos tarjeta)
+   
+5.  Sistema procesa con Stripe
+   
+6.  Pago exitoso:
    - Crea registro en tabla Pagos
    - Actualiza Reserva.Estado = "Confirmada"
    - Asocia Pago.ReservaId con Reserva.Id
-   - EnvÌa notificaciÛn (simulada)
-   ?
-7. ?? Cliente recibe comprobante digital
-   ?
-8. ?? Admin ve pago en Dashboard
+   - Env√≠a notificaci√≥n (simulada)
+   
+7.  Cliente recibe comprobante digital
+   
+8.  Admin ve pago en Dashboard
 ```
 
 ### Estados de Reserva
 
-| Estado | DescripciÛn |
+| Estado | Descripci√≥n |
 |--------|-------------|
 | **Pendiente** | Reserva creada pero sin pago |
 | **Confirmada** | Pago procesado exitosamente |
@@ -390,7 +390,7 @@ BlueTravel/
 
 ### Estados de Pago
 
-| Estado | DescripciÛn |
+| Estado | Descripci√≥n |
 |--------|-------------|
 | **Pendiente** | En proceso |
 | **Aprobado** | Pago exitoso |
@@ -399,23 +399,23 @@ BlueTravel/
 
 ---
 
-## ?? Seguridad Implementada
+##  Seguridad Implementada
 
-- ? **HTTPS** forzado en producciÛn con HSTS
-- ? **ProtecciÛn CSRF** con `[ValidateAntiForgeryToken]`
-- ? **ValidaciÛn de entrada** con Data Annotations
-- ? **AutenticaciÛn y AutorizaciÛn** con ASP.NET Identity
-- ? **Roles y permisos** con `[Authorize(Roles = "Admin")]`
-- ? **Enmascaramiento de tarjetas** (solo ˙ltimos 4 dÌgitos guardados)
-- ? **Logging completo** de transacciones con ILogger
-- ? **ValidaciÛn de propiedad** de recursos (usuarios solo ven sus datos)
-- ? **User Secrets** para credenciales en desarrollo
-- ? **Azure App Settings** para credenciales en producciÛn
-- ? **SanitizaciÛn de HTML** en vistas con `@Html.Raw()` controlado
+-  **HTTPS** forzado en producci√≥n con HSTS
+-  **Protecci√≥n CSRF** con `[ValidateAntiForgeryToken]`
+-  **Validaci√≥n de entrada** con Data Annotations
+-  **Autenticaci√≥n y Autorizaci√≥n** con ASP.NET Identity
+-  **Roles y permisos** con `[Authorize(Roles = "Admin")]`
+-  **Enmascaramiento de tarjetas** (solo √∫ltimos 4 d√≠gitos guardados)
+-  **Logging completo** de transacciones con ILogger
+-  **Validaci√≥n de propiedad** de recursos (usuarios solo ven sus datos)
+-  **User Secrets** para credenciales en desarrollo
+-  **Azure App Settings** para credenciales en producci√≥n
+-  **Sanitizaci√≥n de HTML** en vistas con `@Html.Raw()` controlado
 
 ---
 
-## ?? Despliegue en Azure
+##  Despliegue en Azure
 
 ### Recursos Necesarios
 
@@ -423,10 +423,10 @@ BlueTravel/
 2. **Azure App Service** (Free F1 o Basic B1)
 3. **Application Insights** (opcional)
 
-### Pasos R·pidos
+### Pasos R√°pidos
 
 1. **Crear recursos en Azure Portal**
-2. **Configurar Connection String** en App Service ? Configuration
+2. **Configurar Connection String** en App Service  Configuration
 3. **Configurar variables de entorno**:
    ```
    Stripe__SecretKey = [tu_clave]
@@ -435,8 +435,8 @@ BlueTravel/
    Authentication__Google__ClientSecret = [tu_secreto]
    ```
 4. **Publicar desde Visual Studio**:
-   - Click derecho en proyecto ? Publish
-   - Target: Azure ? Azure App Service (Windows)
+   - Click derecho en proyecto  Publish
+   - Target: Azure  Azure App Service (Windows)
    - Seleccionar tu App Service
    - Publish
 
@@ -445,70 +445,70 @@ BlueTravel/
    Update-Database -ConnectionString "[tu_azure_connection_string]"
    ```
 
-### URL de ProducciÛn
+### URL de Producci√≥n
 ```
 https://tu-app.azurewebsites.net
 ```
 
 ---
 
-## ?? Testing
+##  Testing
 
 ### Flujo de Prueba Completo
 
-#### 1. ExploraciÛn P˙blica
+#### 1. Exploraci√≥n P√∫blica
 ```
-? Visitar /Home/Index
-? Navegar a /Catalogo/Tours
-? Ver detalles de un tour: /Catalogo/Details?tipo=tour&id=1
-? Navegar a /Catalogo/Hospedajes
-? Ver ofertas: /Catalogo/Ofertas
+ Visitar /Home/Index
+ Navegar a /Catalogo/Tours
+ Ver detalles de un tour: /Catalogo/Details?tipo=tour&id=1
+ Navegar a /Catalogo/Hospedajes
+ Ver ofertas: /Catalogo/Ofertas
 ```
 
 #### 2. Registro y Login
 ```
-? Registrar nuevo usuario: /Identity/Account/Register
-? Confirmar email (auto-confirmado en desarrollo)
-? Iniciar sesiÛn: /Identity/Account/Login
-? Probar login con Google (si configurado)
+ Registrar nuevo usuario: /Identity/Account/Register
+ Confirmar email (auto-confirmado en desarrollo)
+ Iniciar sesi√≥n: /Identity/Account/Login
+ Probar login con Google (si configurado)
 ```
 
 #### 3. Crear Reserva
 ```
-? Seleccionar un tour
-? Click en "Reservar Ahora"
-? Completar formulario: fechas, cantidad de personas
-? Validar c·lculo de precio autom·tico
-? Confirmar reserva
+ Seleccionar un tour
+ Click en "Reservar Ahora"
+ Completar formulario: fechas, cantidad de personas
+ Validar c√°lculo de precio autom√°tico
+ Confirmar reserva
 ```
 
 #### 4. Procesar Pago
 ```
-? En "Mis Reservas", click en "Pagar Ahora"
-? Seleccionar mÈtodo de pago: Tarjeta de CrÈdito
-? Ingresar tarjeta de prueba: 4242 4242 4242 4242
-? Completar pago
-? Verificar comprobante en /Pagos/Details/[id]
+ En "Mis Reservas", click en "Pagar Ahora"
+ Seleccionar m√©todo de pago: Tarjeta de Cr√©dito
+ Ingresar tarjeta de prueba: 4242 4242 4242 4242
+ Completar pago
+ Verificar comprobante en /Pagos/Details/[id]
 ```
 
 #### 5. Panel Admin
 ```
-? Cerrar sesiÛn
-? Login como admin@bluetravel.com
-? Acceder a /Admin/Dashboard
-? Verificar estadÌsticas en tiempo real
-? Ver reservas recientes
-? Gestionar hospedajes: /Hospedajes
-? Gestionar tours: /Tours
-? Ver todos los pagos: /Pagos/AdminIndex
+ Cerrar sesi√≥n
+ Login como admin@bluetravel.com
+ Acceder a /Admin/Dashboard
+ Verificar estad√≠sticas en tiempo real
+ Ver reservas recientes
+ Gestionar hospedajes: /Hospedajes
+ Gestionar tours: /Tours
+ Ver todos los pagos: /Pagos/AdminIndex
 ```
 
 ---
 
-## ?? CaracterÌsticas TÈcnicas Destacadas
+## ?? Caracter√≠sticas T√©cnicas Destacadas
 
 ### 1. Repository Pattern
-AbstracciÛn completa de acceso a datos:
+Abstracci√≥n completa de acceso a datos:
 
 ```csharp
 public interface IRepository<T> where T : class
@@ -522,7 +522,7 @@ public interface IRepository<T> where T : class
 ```
 
 ### 2. Cache Service
-OptimizaciÛn de consultas frecuentes:
+Optimizaci√≥n de consultas frecuentes:
 
 ```csharp
 var tours = await _cacheService.GetOrCreateAsync(
@@ -532,7 +532,7 @@ var tours = await _cacheService.GetOrCreateAsync(
 );
 ```
 
-### 3. ValidaciÛn de Disponibilidad
+### 3. Validaci√≥n de Disponibilidad
 Sistema robusto para evitar sobreventa:
 
 ```csharp
@@ -543,7 +543,7 @@ var disponible = await _tourRepository.VerificarDisponibilidad(
 );
 ```
 
-### 4. IntegraciÛn con Stripe
+### 4. Integraci√≥n con Stripe
 Procesamiento de pagos real:
 
 ```csharp
@@ -555,28 +555,28 @@ var resultado = await _stripeService.CrearIntencionPago(
 
 ---
 
-## ?? Roadmap Futuro
+##  Roadmap Futuro
 
 - [ ] **Testing Unitario** completo con xUnit
 - [ ] **Exportar reportes** a PDF/Excel con EPPlus
 - [ ] **Sistema de cupones** de descuento
 - [ ] **Notificaciones email** reales con SendGrid
-- [ ] **API REST** para app mÛvil
-- [ ] **Sistema de reseÒas** con moderaciÛn y calificaciones
-- [ ] **Multi-idioma** (i18n) EspaÒol/InglÈs
+- [ ] **API REST** para app m√≥vil
+- [ ] **Sistema de rese√±as** con moderaci√≥n y calificaciones
+- [ ] **Multi-idioma** (i18n) Espa√±ol/Ingl√©s
 - [ ] **PWA** (Progressive Web App)
 - [ ] **Chat en vivo** con SignalR
-- [ ] **IntegraciÛn con Google Maps** API
+- [ ] **Integraci√≥n con Google Maps** API
 
 ---
 
-## ?? Contribuir
+##  Contribuir
 
-Este es un proyecto acadÈmico, pero se aceptan sugerencias:
+Este es un proyecto acad√©mico, pero se aceptan sugerencias:
 
 1. Fork el proyecto
 2. Crea tu rama (`git checkout -b feature/NuevaCaracteristica`)
-3. Commit tus cambios (`git commit -m 'feat: Agregar nueva caracterÌstica'`)
+3. Commit tus cambios (`git commit -m 'feat: Agregar nueva caracter√≠stica'`)
 4. Push a la rama (`git push origin feature/NuevaCaracteristica`)
 5. Abre un Pull Request
 
@@ -584,59 +584,59 @@ Este es un proyecto acadÈmico, pero se aceptan sugerencias:
 
 ```
 feat: Nueva funcionalidad
-fix: CorrecciÛn de bug
-docs: Cambios en documentaciÛn
+fix: Correcci√≥n de bug
+docs: Cambios en documentaci√≥n
 style: Cambios de formato
-refactor: RefactorizaciÛn
+refactor: Refactorizaci√≥n
 test: Agregar tests
 chore: Tareas de mantenimiento
 ```
 
 ---
 
-## ?? Licencia
+##  Licencia
 
-Proyecto acadÈmico para fines educativos.  
-**Universidad [Tu Universidad]** - 2025
-
----
-
-## ????? Autor
-
-**[Tu Nombre Completo]**
-- ?? Email: tu.email@ejemplo.com
-- ?? GitHub: [@tu_usuario](https://github.com/tu_usuario)
-- ?? LinkedIn: [Tu Perfil](https://linkedin.com/in/tu-perfil)
-
-**Profesor**: [Nombre del Profesor]  
-**Curso**: [Nombre del Curso]  
-**Semestre**: [Semestre y AÒo]
+Proyecto acad√©mico para fines educativos.  
+**Universidad [Universidad Nacional de Costa Rica]** - 2025
 
 ---
 
-## ?? Agradecimientos
+## Autor
+
+**[Brayan P√©rez Balladares]**
+-  Email: bpballadares57@gmail.com@ejemplo.com
+-  GitHub: [@tu_usuario](https://github.com/BrayanperezBalladares)
+-  LinkedIn: [Tu Perfil](https://linkedin.com/in/brayan-perez-28a4b7248)
+
+**Profesor**: [Gloriana Pe√±a]  
+**Curso**: [Programaci√≥n 3]  
+**Semestre**: [2 Ciclo 2025]
+
+---
+
+##  Agradecimientos
 
 - [ASP.NET Core Team](https://dotnet.microsoft.com) - Framework excepcional
 - [Bootstrap](https://getbootstrap.com/) - UI Framework
 - [Stripe](https://stripe.com/) - Procesamiento de pagos
-- [Unsplash](https://unsplash.com/) - Im·genes de alta calidad
-- [FontAwesome](https://fontawesome.com/) - Õconos
+- [Unsplash](https://unsplash.com/) - Im√°genes de alta calidad
+- [FontAwesome](https://fontawesome.com/) - √çconos
 - [AOS Library](https://michalsnik.github.io/aos/) - Animaciones
-- [Chart.js](https://www.chartjs.org/) - Gr·ficos
+- [Chart.js](https://www.chartjs.org/) - Gr√°ficos
 
 ---
 
-## ?? Soporte y Contacto
+##  Soporte y Contacto
 
 ### Problemas Comunes
 
 **Error: "No se puede conectar a la base de datos"**
-- Verifica que SQL Server estÈ ejecut·ndose
-- Confirma la cadena de conexiÛn en `appsettings.json`
+- Verifica que SQL Server est√© ejecut√°ndose
+- Confirma la cadena de conexi√≥n en `appsettings.json`
 
-**Error: "Stripe no est· configurado"**
+**Error: "Stripe no est√° configurado"**
 - Configura las claves en User Secrets
-- Verifica que est·s en modo TEST
+- Verifica que est√°s en modo TEST
 
 **Error: "Google OAuth redirect mismatch"**
 - Actualiza las URIs autorizadas en Google Cloud Console
@@ -646,7 +646,7 @@ Proyecto acadÈmico para fines educativos.
 
 - Abre un [Issue](https://github.com/TU_USUARIO/BlueTravel/issues)
 - Incluye:
-  - DescripciÛn del problema
+  - Descripci√≥n del problema
   - Pasos para reproducir
   - Capturas de pantalla
   - Logs de error
@@ -655,12 +655,12 @@ Proyecto acadÈmico para fines educativos.
 
 <div align="center">
 
-**? Hecho con ?? en Costa Rica ???? ?**
+** Hecho con Amor en Costa Rica **
 
-[?? Volver arriba](#-bluetravel---sistema-de-reservas-turÌsticas)
+[ Volver arriba](#-bluetravel---sistema-de-reservas-tur√≠sticas)
 
 ---
 
-? **Si este proyecto te fue ˙til, considera darle una estrella en GitHub!**
+? **Si este proyecto te fue √∫til, considera darle una estrella en GitHub!**
 
 </div>
