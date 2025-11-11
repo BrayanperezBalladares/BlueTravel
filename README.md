@@ -57,7 +57,7 @@ BlueTravel es una plataforma web completa para la gestión de reservas turístic
 -  Enmascaramiento de datos sensibles (últimos 4 dígitos)
 -  Validación de propiedad de pagos
 
-### ?? Gestión de Usuarios y Seguridad
+###  Gestión de Usuarios y Seguridad
 -  Autenticación con ASP.NET Core Identity
 -  Login con Google OAuth 2.0
 -  Sistema de roles (Admin/Cliente)
@@ -505,7 +505,7 @@ https://tu-app.azurewebsites.net
 
 ---
 
-## ?? Características Técnicas Destacadas
+##  Características Técnicas Destacadas
 
 ### 1. Repository Pattern
 Abstracción completa de acceso a datos:
@@ -604,9 +604,9 @@ Proyecto académico para fines educativos.
 ## Autor
 
 **[Brayan Pérez Balladares]**
--  Email: bpballadares57@gmail.com@ejemplo.com
--  GitHub: [@tu_usuario](https://github.com/BrayanperezBalladares)
--  LinkedIn: [Tu Perfil](https://linkedin.com/in/brayan-perez-28a4b7248)
+-  Email: bpballadares57@gmail.com
+-  GitHub: [@Brayan Pérez](https://github.com/BrayanperezBalladares)
+-  LinkedIn: [Brayan Pérez](https://linkedin.com/in/brayan-perez-28a4b7248)
 
 **Profesor**: [Gloriana Peña]  
 **Curso**: [Programación 3]  
