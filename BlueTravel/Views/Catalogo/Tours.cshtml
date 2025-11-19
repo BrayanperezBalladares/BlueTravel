@@ -38,7 +38,10 @@
 <!-- Filtros Avanzados -->
 <section class="filters-tours sticky-top bg-white shadow-sm py-3" style="top: 76px; z-index: 100;">
     <div class="container">
-        <div class="row g-3 align-items-end">
+        <button type="button" class="filters-collapsible-trigger hide-desktop collapsed" id="toggleFiltersTours">
+            <span><i class="bi bi-funnel me-2"></i>Filtros</span><i class="bi bi-chevron-down"></i>
+        </button>
+        <div class="row g-3 align-items-end filters-wrapper-mobile" id="filtersToursWrapper">
             <div class="col-md-3">
                 <label class="form-label fw-semibold small">
                     <i class="bi bi-search me-1"></i>Buscar Tour
@@ -340,6 +343,21 @@
             font-size: 1.2rem;
             color: white;
         }
+
+        /* Estilos móviles */
+        @@media (max-width: 768px) {
+            .filters-wrapper-mobile { display: none; }
+            .filters-collapsible-trigger { display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background-color: #f8f9fa; border: 1px solid #ddd; border-radius: 0.375rem; cursor: pointer; }
+            .filters-collapsible-trigger i { margin-left: 0.5rem; }
+            .filters-wrapper-mobile.active { display: flex; flex-direction: column; row-gap: 1rem; }
+            .tour-item { flex-direction: column; align-items: stretch; }
+            .tour-card { flex-direction: column; }
+            .tour-img { height: 200px; object-position: top; }
+            .card-body { padding: 1.5rem; }
+            .card-title { font-size: 1.25rem; }
+            .card-text { font-size: 0.875rem; }
+            .btn-primary { padding: 0.5rem 1.25rem; }
+        }
     </style>
 }
 
@@ -408,6 +426,16 @@
             });
 
             items.forEach(item => container.appendChild(item));
+        }
+
+        // Toggle filtros móvil Tours
+        const toggleFiltersTours = document.getElementById('toggleFiltersTours');
+        const wrapperTours = document.getElementById('filtersToursWrapper');
+        if (toggleFiltersTours) {
+            toggleFiltersTours.addEventListener('click', () => {
+                wrapperTours.classList.toggle('active');
+                toggleFiltersTours.classList.toggle('collapsed');
+            });
         }
     </script>
 }

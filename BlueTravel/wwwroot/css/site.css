@@ -292,6 +292,11 @@ h1, h2, h3, h4, h5, h6 {
     transition: all var(--transition-base);
 }
 
+/* Ocultar la flecha/caret por defecto del dropdown SOLO en el botón del Panel Admin */
+.admin-menu-toggle::after {
+    display: none !important;
+}
+
 .admin-menu-toggle:hover {
     background: var(--gradient-primary);
     color: white !important;
@@ -556,7 +561,7 @@ footer {
 }
 
 @keyframes pulse {
-    0%, 100% { transform: scale(1); }
+    0%, 100 { transform: scale(1); }
     50% { transform: scale(1.05); }
 }
 
@@ -1108,3 +1113,54 @@ footer {
         transform: translateX(-50%);
     }
 }
+
+/* =============== MEJORAS RESPONSIVE ADICIONALES =============== */
+@media (max-width: 991px) {
+    /* Reordenar: usuario/admin arriba, navegación luego */
+    .user-nav { order: 0; width: 100%; }
+    .primary-nav { order: 1; width: 100%; }
+
+    .navbar-collapse { max-height: 80vh; overflow-y: auto; }
+    .admin-menu-toggle, .user-menu-toggle { width: 100%; }
+
+    /* Dropdown scrollable en móvil */
+    .admin-dropdown-scroll { max-height: 60vh; overflow-y: auto; }
+    .admin-dropdown-scroll::-webkit-scrollbar { width: 6px; }
+    .admin-dropdown-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+    .admin-dropdown-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+    /* Filtros (Hospedajes / Tours) convertir sticky grande en compacto */
+    .filters-section, .filters-tours { position: static !important; box-shadow: none !important; padding: 0.75rem 0 !important; }
+    .filters-section .row > [class^='col-'], .filters-tours .row > [class^='col-'] { flex: 0 0 100%; max-width: 100%; }
+    .filters-section .form-select, .filters-section .form-control, .filters-tours .form-select, .filters-tours .form-control { font-size: .95rem; }
+
+    /* Acordeón de filtros opcional */
+    .filters-collapsible-trigger { display: flex !important; align-items: center; justify-content: space-between; padding: .75rem 1rem; background: #ffffff; border: 2px solid #e5e7eb; border-radius: var(--radius-lg); font-weight:600; margin-bottom:.75rem; }
+    .filters-collapsible-trigger i { transition: transform .3s ease; }
+    .filters-collapsible-trigger.collapsed i { transform: rotate(0deg); }
+    .filters-collapsible-trigger:not(.collapsed) i { transform: rotate(180deg); }
+    .filters-wrapper-mobile { display: none; }
+    .filters-wrapper-mobile.active { display: block; animation: fadeIn .3s ease; }
+}
+
+/* Mejorar touch targets */
+@media (max-width: 575px) {
+    .nav-link { padding: .85rem 1rem !important; font-size: 0.95rem; }
+    .dropdown-item { padding: .65rem .85rem; font-size: .9rem; }
+
+    /* Footer compacto y mejor calce en móvil */
+    .footer-modern { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
+    .footer-modern .container { padding-left: 1rem; padding-right: 1rem; }
+    .footer-modern .logo-circle-footer { width: 40px; height: 40px; font-size: 1.1rem; }
+    .footer-modern .footer-brand p { font-size: 0.925rem; line-height: 1.6; margin-bottom: 1rem; }
+    .footer-modern .social-links .btn { width: 34px; height: 34px; }
+    .footer-modern .list-unstyled li { margin-bottom: .5rem !important; }
+    .footer-modern hr { margin: 1rem 0 !important; }
+    .footer-modern .fa-cc-visa, 
+    .footer-modern .fa-cc-mastercard, 
+    .footer-modern .fa-cc-paypal { font-size: 1.25rem; }
+}
+
+/* Utilidad para ocultar en desktop */
+.hide-desktop { display: none; }
+@media (max-width: 991px) { .hide-mobile { display: none !important; } .hide-desktop { display: block !important; } }

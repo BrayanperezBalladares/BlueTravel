@@ -33,14 +33,17 @@
 </section>
 
 <!-- Filtros Modernos -->
-<section class="filters-section py-4 bg-white sticky-top shadow-sm" style="top: 76px; z-index: 100;">
+<section class="filters-section py-4 bg-white shadow-sm" style="top: 76px; z-index: 100;">
     <div class="container">
-        <div class="row g-3">
+        <!-- Trigger móvil -->
+        <button type="button" class="filters-collapsible-trigger hide-desktop collapsed" id="toggleFiltersHospedajes">
+            <span><i class="bi bi-funnel me-2"></i>Filtros</span>
+            <i class="bi bi-chevron-down"></i>
+        </button>
+        <div class="row g-3 filters-wrapper-mobile" id="filtersHospedajesWrapper">
             <div class="col-md-3">
                 <div class="input-group">
-                    <span class="input-group-text bg-white">
-                        <i class="bi bi-search"></i>
-                    </span>
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
                     <input type="text" class="form-control" placeholder="Buscar por nombre..." id="searchInput">
                 </div>
             </div>
@@ -303,6 +306,45 @@
             content: "›";
             font-size: 1.2rem;
         }
+
+        /* Estilos para filtros móviles */
+        .filters-collapsible-trigger {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.3s ease;
+        }
+
+        .filters-collapsible-trigger:hover {
+            background: #0056b3;
+        }
+
+        .filters-wrapper-mobile {
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .filters-wrapper-mobile.active {
+            display: flex;
+        }
+
+        /* Ocultar filtros en pantallas grandes */
+        @@media (min-width: 768px) {
+            .filters-collapsible-trigger {
+                display: none;
+            }
+
+            .filters-wrapper-mobile {
+                display: flex !important;
+            }
+        }
     </style>
 }
 
@@ -388,5 +430,15 @@
             this.classList.add('active');
             document.getElementById('gridView').classList.remove('active');
         });
+
+        // Toggle filtros móvil Hospedajes
+        const toggleFiltersHosp = document.getElementById('toggleFiltersHospedajes');
+        const wrapperHosp = document.getElementById('filtersHospedajesWrapper');
+        if (toggleFiltersHosp) {
+            toggleFiltersHosp.addEventListener('click', () => {
+                wrapperHosp.classList.toggle('active');
+                toggleFiltersHosp.classList.toggle('collapsed');
+            });
+        }
     </script>
 }

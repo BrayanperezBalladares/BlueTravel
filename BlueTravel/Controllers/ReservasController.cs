@@ -889,5 +889,127 @@ namespace BlueTravel.Controllers
 
             return Task.FromResult((true, ""));
         }
+
+        // GET: Reservas/CreateOferta?id=1
+        public async Task<IActionResult> CreateOferta(int id)
+        {
+            var oferta = await _ofertaRepository.GetByIdAsync(id);
+            if (oferta == null)
+            {
+                TempData["ErrorMessage"] = "Oferta no encontrada.";
+                return RedirectToAction("Ofertas", "Catalogo");
+            }
+
+            // Validar que la oferta siga vigente
+            if (DateTime.Now > oferta.FechaFin)
+            {
+                TempData["ErrorMessage"] = "Esta oferta ya expiró.";
+                return RedirectToAction("Ofertas", "Catalogo");
+            }
+
+            var reserva = new Reserva
+            {
+                TipoReserva = "Oferta",
+                ItemId = id,
+                ItemNombre = oferta.Titulo,  // ✅ IMPORTANTE: Asignar el nombre aquí
+                FechaInicio = DateTime.Today.AddDays(1),
+                FechaFin = oferta.FechaFin,
+                CantidadAdultos = 1
+            };
+
+            ViewBag.Oferta = oferta;
+            return View(reserva);
+        }
+
+        // POST: Reservas/CreateOferta
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateOferta([Bind("TipoReserva,ItemId,FechaInicio,CantidadAdultos,Comentarios")] Reserva reserva)
+        {
+            ModelState.Remove("UsuarioId");
+            ModelState.Remove("PrecioTotal");
+            ModelState.Remove("PrecioBase");
+            ModelState.Remove("CargoPersonasExtra");
+            ModelState.Remove("DescuentoAplicado");
+            ModelState.Remove("Estado");
+            ModelState.Remove("FechaCreacion");
+            ModelState.Remove("ItemNombre");
+            ModelState.Remove("FechaFin");
+
+            if (!ModelState.IsValid)
+            {
+                var oferta = await _ofertaRepository.GetByIdAsync(reserva.ItemId);
+                ViewBag.Oferta = oferta;
+                return View(reserva);
+            }
+
+            try
+            {
+                var userId = _userManager.GetUserId(User);
+                if (string.IsNullOrEmpty(userId))
+                {
+                    TempData["ErrorMessage"] = "Debes iniciar sesión para hacer una reserva.";
+                    return RedirectToAction("Login", "Account");
+                }
+
+                var oferta = await _ofertaRepository.GetByIdAsync(reserva.ItemId);
+                if (oferta == null)
+                {
+                    TempData["ErrorMessage"] = "Oferta no encontrada.";
+                    return RedirectToAction("Ofertas", "Catalogo");
+                }
+
+                // Validar que la oferta siga vigente
+                if (DateTime.Now > oferta.FechaFin)
+                {
+                    TempData["ErrorMessage"] = "Esta oferta ya expiró.";
+                    return RedirectToAction("Ofertas", "Catalogo");
+                }
+
+                // Asignar datos
+                reserva.UsuarioId = userId;
+                reserva.ItemNombre = oferta.Titulo;  // ✅ ASIGNAR NOMBRE AQUÍ TAMBIÉN
+                reserva.FechaFin = oferta.FechaFin;
+                reserva.FechaCreacion = DateTime.Now;
+                reserva.Estado = "Confirmada";  // Las ofertas se confirman directamente
+                
+                // Si no especificó personas, poner 1 por defecto
+                if (reserva.CantidadAdultos <= 0)
+                {
+                    reserva.CantidadAdultos = 1;
+                }
+
+                // Precio fijo de la oferta
+                reserva.PrecioBase = oferta.Precio;
+                reserva.CargoPersonasExtra = 0;
+                reserva.DescuentoAplicado = 0;
+                reserva.PrecioTotal = oferta.Precio;
+
+                // Guardar
+                await _reservaRepository.AddAsync(reserva);
+                await _reservaRepository.SaveChangesAsync();
+
+                // Limpiar cache
+                _cacheService.RemoveByPattern($"reservas_user_{userId}");
+
+                // Notificaciones
+                var user = await _userManager.GetUserAsync(User);
+                if (user?.Email != null)
+                {
+                    await _notificacionService.EnviarConfirmacionReserva(reserva, user.Email);
+                }
+
+                TempData["SuccessMessage"] = $"¡Oferta reservada! Total: {reserva.PrecioTotal:C}";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al crear reserva de oferta");
+                TempData["ErrorMessage"] = $"Error: {ex.Message}";
+                var oferta = await _ofertaRepository.GetByIdAsync(reserva.ItemId);
+                ViewBag.Oferta = oferta;
+                return View(reserva);
+            }
+        }
     }
 }

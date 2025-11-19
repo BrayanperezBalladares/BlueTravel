@@ -198,8 +198,7 @@
                             @if (User.Identity?.IsAuthenticated == true)
                             {
                                 <a asp-controller="Reservas" 
-                                   asp-action="Create" 
-                                   asp-route-tipo="oferta" 
+                                   asp-action="CreateOferta" 
                                    asp-route-id="@Model.Id"
                                    class="btn btn-lg btn-primary w-100 rounded-pill py-3 fw-bold mb-3">
                                     <i class="bi bi-cart-check me-2"></i>
